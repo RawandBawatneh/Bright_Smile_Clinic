@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Management System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #007BFF, #8E44AD); 
+        }
+
+        .header {
+            background: #0073b7;
+            color: white;
+            text-align: left;
+            padding: 30px 50px;
+            font-size: 2.5em;
+            font-weight: bold;
+            font-style: oblique;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header img {
+            width: 80px;
+            margin-right: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0073b7;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f0faff;
+            border: 1px solid #0073b7;
+            border-radius: 15px;
+        }
+
+        form {
+            margin: 10px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="time"], input[type="date"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(to right, #007BFF, #8E44AD); 
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #005a93;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }       
+    </style>
+    <script>
+        // Function to hide the message after 3 seconds
+        window.onload = function() {
+            var messageElement = document.getElementById('message');
+            if (messageElement) {
+                setTimeout(function() {
+                    messageElement.style.display = 'none';
+                }, 3000); // 3 seconds
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="header">
+        <img src="https://i.pinimg.com/736x/93/67/66/93676657facf845a38f6550c47dcccc4.jpg" alt="Logo">
+        Bright Smile Hospital - Doctor Management
+    </div>
+
+    <div class="container">
+        <h2>Manage Doctors</h2>
+
+        <!-- Doctor Management -->
+        <section>
+            <h3>Insert Doctor</h3>
+            <form action="/insert_doctor" method="POST">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="specialization">Specialization:</label>
+                <input type="text" id="specialization" name="specialization" required>
+
+                <label for="salary">Salary:</label>
+                <input type="number" id="salary" name="salary" step="0.01" required>
+
+                <input type="submit" value="Insert">
+            </form>
+            {% if message and message_type == 'success' %}
+            <div class="success-message">
+                <p>{{ message }}</p>
+            </div>
+            {% elif message and message_type == 'error' %}
+            <div class="error-message">
+                <p>{{ message }}</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <section>
+            <h3>Update Doctor</h3>
+            <form action="/update_doctor" method="POST">
+                <label for="doctor_id">Doctor ID:</label>
+                <input type="number" id="doctor_id" name="doctor_id" required>
+
+                <label for="attribute">Attribute to Update:</label>
+                <select id="attribute" name="attribute" required>
+                    <option value="Name">Name</option>
+                    <option value="Specialization">Specialization</option>
+                    <option value="Salary">Salary</option>
+                </select>
+
+                <label for="new_value">New Value:</label>
+                <input type="text" id="new_value" name="new_value" required>
+
+                <input type="submit" value="Update">
+            </form>
+            {% if message and message_type == 'success' %}
+            <div class="success-message">
+                <p>{{ message }}</p>
+            </div>
+            {% elif message and message_type == 'error' %}
+            <div class="error-message">
+                <p>{{ message }}</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <section>
+            <h3>Delete Doctor</h3>
+            <form action="/delete_doctor" method="POST">
+                <label for="doctor_id_delete">Doctor ID:</label>
+                <input type="number" id="doctor_id_delete" name="doctor_id" required>
+
+                <input type="submit" value="Delete">
+            </form>
+        </section>
+
+        <!-- Doctor Shifts Management -->
+        <h2>Manage Doctor Shifts</h2>
+
+        <section>
+            <h3>Insert Doctor Shift</h3>
+            <form action="/insert_shift" method="POST">
+                <label for="doctor_id_shift">Doctor ID:</label>
+                <input type="number" id="doctor_id_shift" name="doctor_id" required>
+
+                <label for="day_of_week">Day of Week:</label>
+                <select id="day_of_week" name="day_of_week" required>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+
+                <label for="start_time">Start Time:</label>
+                <input type="time" id="start_time" name="start_time" required>
+
+                <label for="end_time">End Time:</label>
+                <input type="time" id="end_time" name="end_time" required>
+
+                <input type="submit" value="Insert">
+            </form>
+        </section>
+
+        <section>
+            <h3>Update Doctor Shift</h3>
+            <form action="/update_shift" method="POST">
+                <label for="doctor_id_shift_update">Doctor ID:</label>
+                <input type="number" id="doctor_id_shift_update" name="doctor_id" required>
+
+                <label for="day_of_week_update">Day of Week:</label>
+                <select id="day_of_week_update" name="day_of_week" required>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+
+                <label for="attribute_shift">Attribute to Update:</label>
+                <select id="attribute_shift" name="attribute" required>
+                    <option value="StartTime">Start Time</option>
+                    <option value="EndTime">End Time</option>
+                </select>
+
+                <label for="new_value_shift">New Value:</label>
+                <input type="time" id="new_value_shift" name="new_value" required>
+
+                <input type="submit" value="Update">
+            </form>
+        </section>
+
+        <section>
+            <h3>Delete Doctor Shift</h3>
+            <form action="/delete_shift" method="POST">
+                <label for="doctor_id_shift_delete">Doctor ID:</label>
+                <input type="number" id="doctor_id_shift_delete" name="doctor_id" required>
+
+                <label for="day_of_week_delete">Day of Week:</label>
+                <select id="day_of_week_delete" name="day_of_week" required>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+
+                <input type="submit" value="Delete">
+            </form>
+        </section>
+
+        <!-- Doctor Leaves Management -->
+        <h2>Manage Doctor Leaves</h2>
+
+        <section>
+            <h3>Insert Doctor Leave</h3>
+            <form action="/insert_leave" method="POST">
+                <label for="doctor_id_leave">Doctor ID:</label>
+                <input type="number" id="doctor_id_leave" name="doctor_id" required>
+
+                <label for="leave_start">Leave Start:</label>
+                <input type="date" id="leave_start" name="leave_start" required>
+
+                <label for="leave_end">Leave End:</label>
+                <input type="date" id="leave_end" name="leave_end" required>
+
+                <label for="reason">Reason:</label>
+                <textarea id="reason" name="reason" rows="3"></textarea>
+
+                <input type="submit" value="Insert">
+            </form>
+ 
+        <section>
+            <h3>Update Doctor Leave</h3>
+            <form action="/update_leave" method="POST">
+                <label for="doctor_id_leave_update">Doctor ID:</label>
+                <input type="number" id="doctor_id_leave_update" name="doctor_id" required>
+
+                <label for="leave_start_update">Leave Start:</label>
+                <input type="date" id="leave_start_update" name="leave_start" required>
+
+                <label for="leave_end_update">Leave End:</label>
+                <input type="date" id="leave_end_update" name="leave_end" required>
+
+                <label for="reason_update">Reason:</label>
+                <textarea id="reason_update" name="reason" rows="3"></textarea>
+
+                <input type="submit" value="Update">
+            </form>
+        </section>
+
+        <section>
+            <h3>Delete Doctor Leave</h3>
+            <form action="/delete_leave" method="POST">
+                <label for="doctor_id_leave_delete">Doctor ID:</label>
+                <input type="number" id="doctor_id_leave_delete" name="doctor_id" required>
+
+                <label for="leave_start_delete">Leave Start:</label>
+                <input type="date" id="leave_start_delete" name="leave_start" required>
+
+                <input type="submit" value="Delete">
+            </form>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>   
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bright Smile Dental Clinic</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    
+    body {
+      margin: 0;
+      font-family: 'Raleway', Arial, sans-serif;
+      background: linear-gradient(to right, #007BFF, #8E44AD); 
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(to right, #007BFF, #8E44AD);
+      padding: 10px 20px;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+    }
+
+    .navbar .logo img {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+    }
+
+    .navbar .logo span {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .navbar .menu {
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar .menu a {
+      text-decoration: none;
+      color: white;
+      font-size: 1em;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .navbar .menu a:hover::after,
+    .navbar .menu a.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 100%;
+      height: 2px;
+      background: white;
+    }
+
+    .hero-section {
+      position: relative;
+      height: 60vh; /* Adjusted to give more room to the appointments */
+      background: url('https://static.vecteezy.com/system/resources/previews/006/412/029/non_2x/dental-clinic-room-interior-free-vector.jpg') no-repeat center center/cover;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      margin-bottom: 40px; /* Added margin to create space between hero section and next section */
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6); /* Dark overlay for better text visibility */
+      z-index: 1;
+    }
+
+    .hero-section h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 3em;
+      font-weight: bold;
+      color: #fff;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      animation: slideIn 2s ease-out forwards, moveText 3s 2s forwards;
+      transform: translateY(-100%);
+      z-index: 2;
+    }
+
+    .hero-section h1 span {
+      font-family: 'Pacifico', cursive;
+      display: block;
+      font-size: 1.5em;
+      margin-top: 10px;
+      animation: fadeIn 2s 1.5s ease-in-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes moveText {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(50px);
+      }
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h3 {
+      margin: 0;
+      color: #333;
+      font-size: 1.5em;
+    }
+
+    .add-icon {
+      cursor: pointer;
+      font-size: 1.5em;
+      color: #007bc7;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+
+    .add-icon:hover {
+      background-color: #e1e1e1;
+    }
+
+    .section-content {
+      margin-top: 10px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item span {
+      color: #007bc7;
+      font-weight: bold;
+    }
+    /* Add these styles for horizontal scrolling */
+.section-content {
+  margin-top: 10px;
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+}
+
+.treatment-item {
+  flex: 0 0 auto;
+  width: 300px; /* Adjust the width as needed */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 15px;
+}
+
+.treatment-img img {
+  width: 100%;
+  height: 200px; 
+  object-fit: cover; 
+  border-radius: 5px;
+}
+
+.treatment-details h4 {
+  margin-top: 10px;
+  color: #333;
+}
+
+.treatment-details p {
+  font-size: 0.9em;
+  color: #555;
+}
+
+
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <div class="logo">
+    <img src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png" alt="Logo">
+    <span>Bright Smile Dental Clinic</span>
+  </div>
+  <div class="menu">
+    <a href="dashboard.html" >Dashboard</a>
+    <a href="myClinic.html" >My Clinic</a>
+    <a href="#" >Data Security</a>
+    <a href="#" >Blogs</a>
+    <a href="#" >Contact</a>
+    <a href="#" >FAQs</a>
+    <a href="#" >Screening</a>
+ 
+  </div>
+</div>
+
+
+<!-- My Clinic Tab Content -->
+<div class="container" id="my-clinic">
+  <!-- About Us Section -->
+  <div class="section">
+    <div class="section-header">
+      <h3>About Us</h3>
+    </div>
+  </div>
+
+  <div class="section-content about-us">
+    <p>Welcome to Bright Smile Dental Clinic, your trusted destination for exceptional dental care in the heart of Palestine, Ramallah. Our clinic is dedicated to providing high-quality dental services tailored to meet the unique needs of each patient. With a team of experienced and compassionate professionals, we offer a comprehensive range of treatments, including preventative care, cosmetic dentistry, orthodontics, and restorative procedures.</p>
+    <p>At Bright Smile Dental Clinic, we prioritize patient comfort and satisfaction, ensuring that every visit is a positive and stress-free experience. Our state-of-the-art facility is equipped with the latest technology to deliver precise and efficient care. Conveniently located in Ramallah, we are committed to serving our community with excellence, integrity, and a smile. Whether you need a routine check-up or advanced dental treatment, we are here to help you achieve optimal oral health and the confident smile you deserve.</p>
+  </div>
+</div>
+
+ <!-- Treatments Section -->
+<div class="section">
+  <div class="section-header">
+    <h3>Our Treatments</h3>
+  </div>
+  <div class="section-content">
+    <!-- Preventative Care -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://i.pinimg.com/736x/f1/f4/0d/f1f40d8543508b99359d246342a392fb.jpg" alt="Preventative Care" />
+      </div>
+      <div class="treatment-details">
+        <h4>Preventative Care</h4>
+        <p>We provide essential dental check-ups, cleanings, and fluoride treatments to ensure your smile stays healthy and vibrant.</p>
+      </div>
+    </div>
+
+    <!-- Cosmetic Dentistry -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://www.mainstreetdentalin.com/wp-content/uploads/2023/12/shutterstock_1730216617-e1702050872234.jpg" alt="Cosmetic Dentistry" />
+      </div>
+      <div class="treatment-details">
+        <h4>Cosmetic Dentistry</h4>
+        <p>Our cosmetic dentistry services include teeth whitening, veneers, and bonding to enhance the appearance of your smile.</p>
+      </div>
+    </div>
+
+    <!-- Orthodontics -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://zanedentalmn.com/wp-content/uploads/2024/02/Orthodontics.jpg" alt="Orthodontics" />
+      </div>
+      <div class="treatment-details">
+        <h4>Orthodontics</h4>
+        <p>We offer advanced orthodontic treatments, including braces and clear aligners, to straighten your teeth and improve your bite.</p>
+      </div>
+    </div>
+
+    <!-- Restorative Dentistry -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://drchahitakidsdentist.com/wp-content/uploads/2024/02/restorative-dentistry.png" alt="Restorative Dentistry" />
+      </div>
+      <div class="treatment-details">
+        <h4>Restorative Dentistry</h4>
+        <p>We provide a wide range of restorative treatments, including fillings, crowns, bridges, and implants to restore your teeth to their natural form and function.</p>
+      </div>
+    </div>
+
+    <!-- Root Canal Treatment -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://images.squarespace-cdn.com/content/v1/53539894e4b0e85fd9202881/1678154327960-RAF164AZB8SBREELWPJW/cc-dental-root-canal-diagram.jpg" alt="Root Canal Treatment" />
+      </div>
+      <div class="treatment-details">
+        <h4>Root Canal Treatment</h4>
+        <p>If you have a damaged or infected tooth, our root canal treatment can save your tooth and relieve your pain by removing the infection from inside the tooth.</p>
+      </div>
+    </div>
+
+    <!-- Teeth Whitening -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://www.myddsny.com/wp-content/uploads/2019/06/white-teeth.jpg" alt="Teeth Whitening" />
+      </div>
+      <div class="treatment-details">
+        <h4>Teeth Whitening</h4>
+        <p>Our professional teeth whitening treatments will help you achieve a brighter, more radiant smile in just one visit.</p>
+      </div>
+    </div>
+
+    <!-- Dental Implants -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQREnGpVYeGoWVWQ13CxzBqPohjQzYWphDy2g&s" alt="Dental Implants" />
+      </div>
+      <div class="treatment-details">
+        <h4>Dental Implants</h4>
+        <p>We offer advanced dental implants to replace missing teeth, providing a permanent and natural-looking solution.</p>
+      </div>
+    </div>
+
+    <!-- Dental Crowns and Bridges -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://s16736.pcdn.co/wp-content/uploads/sites/247/2020/01/MagnoliaJan20-min.jpg.optimal.jpg" alt="Dental Crowns and Bridges" />
+      </div>
+      <div class="treatment-details">
+        <h4>Dental Crowns and Bridges</h4>
+        <p>We restore damaged or missing teeth with crowns and bridges, offering both aesthetic and functional benefits.</p>
+      </div>
+    </div>
+
+    <!-- Gum Treatment -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://images.squarespace-cdn.com/content/v1/578e53e215d5db25cc216318/1476227554731-ABFBJMCIC68OZSPS5RS5/image-asset.jpeg" alt="Gum Treatment" />
+      </div>
+      <div class="treatment-details">
+        <h4>Gum Treatment</h4>
+        <p>Our gum treatments address issues like gum disease and ensure the health of your gums and overall oral hygiene.</p>
+      </div>
+    </div>
+
+    <!-- Wisdom Tooth Extraction -->
+    <div class="treatment-item">
+      <div class="treatment-img">
+        <img src="https://www.bostondentalgroup.com/wp-content/uploads/wisdom-teeth-removal-and-recovery.jpg" alt="Wisdom Tooth Extraction" />
+      </div>
+      <div class="treatment-details">
+        <h4>Wisdom Tooth Extraction</h4>
+        <p>If your wisdom teeth are causing pain or discomfort, our safe extraction procedures can help alleviate any issues.</p>
+      </div>
+    </div>
+
+<!-- Pediatric Dentistry -->
+<div class="treatment-item">
+  <div class="treatment-img">
+    <img src="https://www.edgecliffdentalcare.com.au/wp-content/webp-express/webp-images/uploads/2021/03/edgecliff-childrens-dentist.jpg.webp" alt="Pediatric Dentistry" />
+  </div>
+  <div class="treatment-details">
+    <h4>Pediatric Dentistry</h4>
+    <p>Our pediatric dental care ensures your child's teeth and gums stay healthy, with a focus on prevention and early intervention.</p>
+  </div>
+</div>
+
+<!-- Emergency Dentistry -->
+<div class="treatment-item">
+  <div class="treatment-img">
+    <img src="https://media.istockphoto.com/id/1443403914/vector/dental-care-protection.jpg?s=612x612&w=0&k=20&c=gaSNNBkOjBnyvcITJ00d2nxrZWCIkLpFmTKTOydUF94=" alt="Emergency Dentistry" />
+  </div>
+  <div class="treatment-details">
+    <h4>Emergency Dentistry</h4>
+    <p>We provide prompt treatment for dental emergencies, such as toothaches, broken teeth, and other urgent oral health concerns.</p>
+  </div>
+</div>
+
+ <!-- Fillings -->
+ <div class="treatment-item">
+  <div class="treatment-img">
+    <img src="https://as2.ftcdn.net/v2/jpg/05/94/22/57/1000_F_594225775_EfCoQMAFN1Cc9czH8F2T2V9GzeeALxOM.jpg" alt="Fillings" />
+  </div>
+  <div class="treatment-details">
+    <h4>Fillings</h4>
+    <p>We offer a range of filling options to restore teeth affected by decay or damage, using materials like composite, amalgam, or porcelain to suit your needs.</p>
+  </div>
+</div>
+
+<!-- Tooth Extraction -->
+<div class="treatment-item">
+  <div class="treatment-img">
+    <img src="https://cdn.vectorstock.com/i/500p/51/62/tooth-is-removed-forceps-in-oral-vector-25805162.jpg" alt="Tooth Extraction" />
+  </div>
+  <div class="treatment-details">
+    <h4>Tooth Extraction</h4>
+    <p>In cases where a tooth is severely damaged or decayed, we provide safe extraction procedures to remove the tooth and preserve your oral health.</p>
+  </div>
+</div>
+<!-- Geriatric Dentistry -->
+<div class="treatment-item">
+  <div class="treatment-img">
+    <img src="https://media.istockphoto.com/id/858492348/vector/old-people-with-teeth.jpg?s=612x612&w=0&k=20&c=zeuYvX-9JyeJ1HnBX7k0vlgbN_5Iwmy_WuDeJGiZ-rc=" alt="Geriatric Dentistry" />
+  </div>
+  <div class="treatment-details">
+    <h4>Geriatric Dentistry</h4>
+    <p>We offer comprehensive dental care for seniors, addressing specific needs like dry mouth, dentures, and maintaining oral health as you age.</p>
+  </div>
+</div>
+<!-- Veneers -->
+<div class="treatment-item">
+  <div class="treatment-img">
+    <img src="https://www.deardoctor.com/images/blog/picture-dental-crowns3-300.jpg" alt="Veneers" />
+  </div>
+  <div class="treatment-details">
+    <h4>Veneers</h4>
+    <p>We offer custom-made porcelain veneers that can cover imperfections like discoloration, chips, and gaps in your smile.</p>
+  </div>
+</div>
+<!-- Laser Dentistry -->
+<div class="treatment-item">
+  <div class="treatment-img">
+    <img src="https://t3.ftcdn.net/jpg/09/02/70/36/360_F_902703653_dHskMpNum45MEcNqNrttPKzEoVLXa022.jpg" alt="Laser Dentistry" />
+  </div>
+  <div class="treatment-details">
+    <h4>Laser Dentistry</h4>
+    <p>Our laser dentistry services offer a less invasive treatment option for soft and hard tissue procedures, promoting faster recovery with minimal discomfort.</p>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<script>
+  const myClinicContent = document.getElementById('my-clinic');
+  const tabs = document.querySelectorAll('.tab');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function (e) {
+      e.preventDefault();
+      tabs.forEach(item => item.classList.remove('active'));
+      this.classList.add('active');
+      const tabName = this.dataset.tab;
+
+     if (tabName === 'my-clinic') {
+        myClinicContent.style.display = 'block';
+        dashboardContent.style.display = 'none';
+      } else {
+        dashboardContent.style.display = 'none';
+        myClinicContent.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

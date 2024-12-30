@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Management</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #007BFF, #8E44AD); 
+        }
+
+        .header {
+            background: #0073b7;
+            color: white;
+            text-align: left;
+            padding: 30px 50px;
+            font-size: 2.5em;
+            font-weight: bold;
+            font-style: oblique;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header img {
+            width: 80px;
+            margin-right: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0073b7;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f0faff;
+            border: 1px solid #0073b7;
+            border-radius: 15px;
+        }
+
+        form {
+            margin: 10px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="time"], input[type="date"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(to right, #007BFF, #8E44AD); 
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #005a93;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://i.pinimg.com/736x/93/67/66/93676657facf845a38f6550c47dcccc4.jpg" alt="Logo">
+        Bright Smile Dental Clinic - Appointment Management
+    </div>
+
+    <div class="container">
+        <h2>Appointment Management</h2>
+
+        <section>
+            <h3>Insert Appointment</h3>
+            <form action="/insert_appointment" method="POST">
+                <label for="patient_id">Patient ID:</label>
+                <input type="number" id="patient_id" name="patient_id" required>
+
+                <label for="doctor_id">Doctor ID:</label>
+                <input type="number" id="doctor_id" name="doctor_id" required>
+
+                <label for="appointment_date">Appointment Date:</label>
+                <input type="date" id="appointment_date" name="appointment_date" required>
+
+                <label for="appointment_time">Appointment Time:</label>
+                <input type="time" id="appointment_time" name="appointment_time" required>
+
+                <label for="status">Status:</label>
+                <select id="status" name="status" required>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes" rows="3"></textarea>
+
+                <input type="submit" value="Insert">
+            </form>
+        </section>
+
+        <section>
+            <h3>Update Appointment</h3>
+            <form action="/update_appointment" method="POST">
+                <label for="appointment_id">Appointment ID:</label>
+                <input type="number" id="appointment_id" name="appointment_id" required>
+
+                <label for="attribute">Attribute to Update:</label>
+                <select id="attribute" name="attribute" required>
+                    <option value="PatientID">Patient ID</option>
+                    <option value="DoctorID">Doctor ID</option>
+                    <option value="AppointmentDate">Appointment Date</option>
+                    <option value="AppointmentTime">Appointment Time</option>
+                    <option value="Status">Status</option>
+                    <option value="Notes">Notes</option>
+                </select>
+
+                <label for="new_value">New Value:</label>
+                <input type="text" id="new_value" name="new_value" required>
+
+                <input type="submit" value="Update">
+            </form>
+        </section>
+
+        <section>
+            <h3>Delete Appointment</h3>
+            <form action="/delete_appointment" method="POST">
+                <label for="delete_appointment_id">Appointment ID:</label>
+                <input type="number" id="delete_appointment_id" name="delete_appointment_id" required>
+
+                <input type="submit" value="Delete">
+            </form>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #007BFF, #8E44AD); 
+        }
+
+        .header {
+            background: #0073b7;
+            color: white;
+            text-align: left;
+            padding: 30px 50px;
+            font-size: 2.5em;
+            font-weight: bold;
+            font-style: oblique;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header img {
+            width: 80px;
+            margin-right: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0073b7;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f0faff;
+            border: 1px solid #0073b7;
+            border-radius: 15px;
+        }
+
+        form {
+            margin: 10px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(to right, #007BFF, #8E44AD); 
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #005a93;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://i.pinimg.com/736x/93/67/66/93676657facf845a38f6550c47dcccc4.jpg" alt="Logo">
+        Bright Smile Dental Clinic - Patient Management
+    </div>
+
+    <div class="container">
+        <h2>Patient Management</h2>
+
+        <section>
+            <h3>Insert Patient</h3>
+            <form action="/insert_patient" method="POST">
+                <label for="firstname">First Name:</label>
+                <input type="text" id="firstname" name="firstname" required>
+
+                <label for="lastname">Last Name:</label>
+                <input type="text" id="lastname" name="lastname" required>
+
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required>
+
+                <label for="balance">Balance:</label>
+                <input type="number" id="balance" name="balance" required>
+
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" required>
+
+                <label for="emergency">Emergency Contact:</label>
+                <input type="text" id="emergency" name="emergency">
+
+                <label for="drug_allergy">Drug Allergy:</label>
+                <input type="text" id="drug_allergy" name="drug_allergy">
+
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="insurance">Insurance Status:</label>
+                <input type="text" id="insurance" name="insurance">
+
+                <label for="medical_history">Medical History:</label>
+                <textarea id="medical_history" name="medical_history" rows="4"></textarea>
+
+                <input type="submit" value="Insert">
+            </form>
+        </section>
+
+        <section>
+            <h3>Update Patient</h3>
+            <form action="/update_patient" method="POST">
+                <label for="patient_id">Patient ID:</label>
+                <input type="number" id="patient_id" name="patient_id" required>
+
+                <label for="attribute">Attribute to Update:</label>
+                <select id="attribute" name="attribute" required>
+                    <option value="FirstName">First Name</option>
+                    <option value="LastName">Last Name</option>
+                    <option value="DateOfBirth">Date of Birth</option>
+                    <option value="Balance">Balance</option>
+                    <option value="PhoneNumber">Phone Number</option>
+                    <option value="EmergencyContact">Emergency Contact</option>
+                    <option value="DrugAllergy">Drug Allergy</option>
+                    <option value="Gender">Gender</option>
+                    <option value="InsuranceStatus">Insurance Status</option>
+                    <option value="MedicalHistory">Medical History</option>
+                </select>
+
+                <label for="new_value">New Value:</label>
+                <input type="text" id="new_value" name="new_value" required>
+
+                <input type="submit" value="Update">
+            </form>
+        </section>
+
+        <section>
+            <h3>Delete Patient</h3>
+            <form action="/delete_patient" method="POST">
+                <label for="delete_patient_id">Patient ID:</label>
+                <input type="number" id="delete_patient_id" name="delete_patient_id" required>
+
+                <input type="submit" value="Delete">
+            </form>
+        </section>
+    </div>
+</body>
+</html>
