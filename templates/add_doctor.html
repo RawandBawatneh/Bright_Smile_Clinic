@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,131 +10,259 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #007BFF, #8E44AD); 
+            background: linear-gradient(to right, #007BFF, #8E44AD);
+            color: white;
         }
 
         .header {
             background: #0073b7;
             color: white;
             text-align: left;
-            padding: 30px 50px;
+            padding: 20px;
             font-size: 2.5em;
             font-weight: bold;
-            font-style: oblique;
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .header img {
-            width: 80px;
-            margin-right: 20px;
-            border-radius: 50%;
-            display: inline-block;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .container {
             width: 80%;
             margin: 30px auto;
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #0073b7;
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        section {
-            margin: 20px 0;
+            color: #333;
             padding: 20px;
-            background-color: #f0faff;
-            border: 1px solid #0073b7;
             border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .tab {
+            background: #0073b7;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+            font-size: 1.2em;
+            transition: background 0.3s;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: #005a93;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
         }
 
         form {
-            margin: 10px 0;
+            margin-top: 20px;
         }
 
         label {
             display: block;
             margin: 10px 0 5px;
             font-weight: bold;
-            color: #333;
         }
 
-        input[type="text"], input[type="time"], input[type="date"], input[type="number"], select, textarea {
-            width: 100%;
-            padding: 12px;
+        input[type="text"],
+        input[type="number"],
+        input[type="time"],
+        input[type="date"],
+        select {
+            width: 98%;
+            padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
+            border-radius: 5px;
         }
 
-        input[type="submit"] {
-            background: linear-gradient(to right, #007BFF, #8E44AD); 
+        button {
+            background: linear-gradient(to right, #007BFF, #8E44AD);
             color: white;
-            padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 1.1em;
+            transition: background 0.3s;
         }
 
-        input[type="submit"]:hover {
-            background-color: #005a93;
+        button:hover {
+            background: #005a93;
         }
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-        }
-
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-        }       
     </style>
     <script>
-        // Function to hide the message after 3 seconds
-        window.onload = function() {
-            var messageElement = document.getElementById('message');
-            if (messageElement) {
-                setTimeout(function() {
-                    messageElement.style.display = 'none';
-                }, 3000); // 3 seconds
-            }
-        };
+        document.addEventListener('DOMContentLoaded', function () {
+            // Handle tab switching
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.section');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and sections
+                    tabs.forEach(t => t.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+
+                    // Add active class to the clicked tab and the corresponding section
+                    tab.classList.add('active');
+                    const targetSection = document.getElementById(tab.dataset.target);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Fetch doctor names for Insert, Update, Delete Doctor, and Insert Doctor Shift sections
+            fetch('/fetch_doctor_names') // Adjust the URL if necessary
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Doctor Names for Insert, Update, Delete Doctor, and Insert Doctor Shift:', data); // Debugging log
+
+                    // Ensure data is an array and has doctor names
+                    if (Array.isArray(data) && data.length > 0) {
+                        const doctorUpdateSelect = document.getElementById('doctor_update');
+                        const doctorDeleteSelect = document.getElementById('doctor_delete');
+                        const doctorInsertShiftSelect = document.getElementById('doctor_insert_shift');
+
+                        // Clear existing options before adding new ones
+                        doctorUpdateSelect.innerHTML = '';
+                        doctorDeleteSelect.innerHTML = '';
+                        doctorInsertShiftSelect.innerHTML = '';
+
+                        // Add default option to the selects
+                        const defaultOption = new Option('Select a Doctor', '');
+                        doctorUpdateSelect.add(defaultOption);
+                        doctorDeleteSelect.add(defaultOption.cloneNode(true));
+                        doctorInsertShiftSelect.add(defaultOption.cloneNode(true));
+
+                        // Populate the dropdowns with doctor names
+                        data.forEach(doctor => {
+                            const option = new Option(doctor.Name, doctor.Name);
+                            doctorUpdateSelect.add(option);
+                            doctorDeleteSelect.add(option.cloneNode(true));
+                            doctorInsertShiftSelect.add(option.cloneNode(true));
+                        });
+                    } else {
+                        console.log('No doctor names found or invalid data format.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching doctor names for sections:', error);
+                });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Fetch doctor names for Update Doctor Shift and Delete Doctor Shift sections
+            fetch('/get_doctors')  // Use another endpoint for doctor shifts
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Doctor Names for Shift Management:', data); // Debugging log
+
+                    // Ensure data is an array and has doctor names
+                    if (Array.isArray(data) && data.length > 0) {
+                        const doctorUpdateShiftSelect = document.getElementById('doctor_update_shift');
+                        const doctorDeleteShiftSelect = document.getElementById('doctor_delete_shift');
+
+                        // Clear existing options before adding new ones
+                        doctorUpdateShiftSelect.innerHTML = '';
+                        doctorDeleteShiftSelect.innerHTML = '';
+
+                        // Add default option to the selects
+                        const defaultOption = new Option('Select a Doctor', '');
+                        doctorUpdateShiftSelect.add(defaultOption);
+                        doctorDeleteShiftSelect.add(defaultOption.cloneNode(true));
+
+                        // Populate the dropdowns with doctor names
+                        data.forEach(doctor => {
+                            const option = new Option(doctor.Name, doctor.Name);
+                            doctorUpdateShiftSelect.add(option);
+                            doctorDeleteShiftSelect.add(option.cloneNode(true));
+                        });
+                    } else {
+                        console.log('No doctor names found for shifts or invalid data format.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching doctor names for shift management:', error);
+                });
+        });
+    
+        document.addEventListener('DOMContentLoaded', function () {
+        // Fetch doctor names for Leave sections (Insert, Update, Delete Leaves)
+        fetch('/get_doctors')  // Adjust the URL to fetch doctor names for leaves
+            .then(response => response.json())
+            .then(data => {
+                console.log('Doctor Names for Leave Management:', data); // Debugging log
+
+                // Ensure data is an array and has doctor names
+                if (Array.isArray(data) && data.length > 0) {
+                    const doctorInsertLeaveSelect = document.getElementById('doctor_insert_leave');
+                    const doctorUpdateLeaveSelect = document.getElementById('doctor_update_leave');
+                    const doctorDeleteLeaveSelect = document.getElementById('doctor_delete_leave');
+
+                    // Clear existing options before adding new ones
+                    doctorInsertLeaveSelect.innerHTML = '';
+                    doctorUpdateLeaveSelect.innerHTML = '';
+                    doctorDeleteLeaveSelect.innerHTML = '';
+
+                    // Add default option to the selects
+                    const defaultOption = new Option('Select a Doctor', '');
+                    doctorInsertLeaveSelect.add(defaultOption);
+                    doctorUpdateLeaveSelect.add(defaultOption.cloneNode(true));
+                    doctorDeleteLeaveSelect.add(defaultOption.cloneNode(true));
+
+                    // Populate the dropdowns with doctor names
+                    data.forEach(doctor => {
+                        const option = new Option(doctor.Name, doctor.Name);
+                        doctorInsertLeaveSelect.add(option);
+                        doctorUpdateLeaveSelect.add(option.cloneNode(true));
+                        doctorDeleteLeaveSelect.add(option.cloneNode(true));
+                    });
+                } else {
+                    console.log('No doctor names found for leaves or invalid data format.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching doctor names for leave management:', error);
+            });
+    });
     </script>
 </head>
+
 <body>
     <div class="header">
-        <img src="https://i.pinimg.com/736x/93/67/66/93676657facf845a38f6550c47dcccc4.jpg" alt="Logo">
-        Bright Smile Hospital - Doctor Management
+        Bright Smile Hospital - Management System
     </div>
 
     <div class="container">
-        <h2>Manage Doctors</h2>
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" data-target="doctors-section">Doctors</div>
+            <div class="tab" data-target="shifts-section">Shifts</div>
+            <div class="tab" data-target="leaves-section">Leaves</div>
+        </div>
 
-        <!-- Doctor Management -->
-        <section>
-            <h3>Insert Doctor</h3>
+        <!-- Doctors Section -->
+        <div id="doctors-section" class="section active">
+            <h2>Manage Doctors</h2>
+            <!-- Insert Doctor -->
             <form action="/insert_doctor" method="POST">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
+                <h3>Insert Doctor</h3>
+                <label for="doctor-name">Name:</label>
+                <input type="text" id="doctor-name" name="name" required>
 
                 <label for="specialization">Specialization:</label>
                 <input type="text" id="specialization" name="specialization" required>
@@ -141,191 +270,195 @@
                 <label for="salary">Salary:</label>
                 <input type="number" id="salary" name="salary" step="0.01" required>
 
-                <input type="submit" value="Insert">
+                <button type="submit">Insert</button>
             </form>
-            {% if message and message_type == 'success' %}
-            <div class="success-message">
-                <p>{{ message }}</p>
-            </div>
-            {% elif message and message_type == 'error' %}
-            <div class="error-message">
-                <p>{{ message }}</p>
-            </div>
-            {% endif %}
-        </section>
 
-        <section>
-            <h3>Update Doctor</h3>
+            <!-- Update Doctor -->
             <form action="/update_doctor" method="POST">
-                <label for="doctor_id">Doctor ID:</label>
-                <input type="number" id="doctor_id" name="doctor_id" required>
+                <h3>Update Doctor</h3>
+                <label for="update-doctor">Select Doctor:</label>
+                <select id="doctor_update" name="doctor_name" required>
+                    <option value="">Select Doctor</option>
+                    <!-- Populate from backend -->
+                </select>
 
-                <label for="attribute">Attribute to Update:</label>
-                <select id="attribute" name="attribute" required>
+                <label for="update-attribute">Attribute:</label>
+                <select id="update-attribute" name="attribute" required>
                     <option value="Name">Name</option>
                     <option value="Specialization">Specialization</option>
                     <option value="Salary">Salary</option>
                 </select>
 
-                <label for="new_value">New Value:</label>
-                <input type="text" id="new_value" name="new_value" required>
+                <label for="new-value">New Value:</label>
+                <input type="text" id="new-value" name="new_value" required>
 
-                <input type="submit" value="Update">
+                <button type="submit">Update</button>
             </form>
-            {% if message and message_type == 'success' %}
-            <div class="success-message">
-                <p>{{ message }}</p>
-            </div>
-            {% elif message and message_type == 'error' %}
-            <div class="error-message">
-                <p>{{ message }}</p>
-            </div>
-            {% endif %}
-        </section>
 
-        <section>
-            <h3>Delete Doctor</h3>
+            <!-- Delete Doctor -->
             <form action="/delete_doctor" method="POST">
-                <label for="doctor_id_delete">Doctor ID:</label>
-                <input type="number" id="doctor_id_delete" name="doctor_id" required>
-
-                <input type="submit" value="Delete">
-            </form>
-        </section>
-
-        <!-- Doctor Shifts Management -->
-        <h2>Manage Doctor Shifts</h2>
-
-        <section>
-            <h3>Insert Doctor Shift</h3>
-            <form action="/insert_shift" method="POST">
-                <label for="doctor_id_shift">Doctor ID:</label>
-                <input type="number" id="doctor_id_shift" name="doctor_id" required>
-
-                <label for="day_of_week">Day of Week:</label>
-                <select id="day_of_week" name="day_of_week" required>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
+                <h3>Delete Doctor</h3>
+                <label for="delete-doctor">Select Doctor:</label>
+                <select id="doctor_delete" name="doctor_name" required>
+                    <option value="">Select Doctor</option>
+                    <!-- Populate from backend -->
                 </select>
 
-                <label for="start_time">Start Time:</label>
-                <input type="time" id="start_time" name="start_time" required>
-
-                <label for="end_time">End Time:</label>
-                <input type="time" id="end_time" name="end_time" required>
-
-                <input type="submit" value="Insert">
+                <button type="submit">Delete</button>
             </form>
-        </section>
+        </div>
 
-        <section>
-            <h3>Update Doctor Shift</h3>
-            <form action="/update_shift" method="POST">
-                <label for="doctor_id_shift_update">Doctor ID:</label>
-                <input type="number" id="doctor_id_shift_update" name="doctor_id" required>
+        <!-- Shifts Section -->
+        <div id="shifts-section" class="section">
+            <h2>Manage Shifts</h2>
+            <!-- Insert Doctor Shift -->
+            <section>
+                <h3>Insert Doctor Shift</h3>
+                <form action="/insert_shift" method="POST">
+                    <label for="doctor_insert_shift">Select Doctor:</label>
+                    <select id="doctor_insert_shift" name="doctor_name" required>
+                        <option value="" disabled selected>Select a doctor</option>
+                    </select>
 
-                <label for="day_of_week_update">Day of Week:</label>
-                <select id="day_of_week_update" name="day_of_week" required>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                </select>
+                    <label for="day_of_week">Day of Week:</label>
+                    <select id="day_of_week" name="day_of_week" required>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
 
-                <label for="attribute_shift">Attribute to Update:</label>
-                <select id="attribute_shift" name="attribute" required>
-                    <option value="StartTime">Start Time</option>
-                    <option value="EndTime">End Time</option>
-                </select>
+                    <label for="start_time">Start Time:</label>
+                    <input type="time" id="start_time" name="start_time" required>
 
-                <label for="new_value_shift">New Value:</label>
-                <input type="time" id="new_value_shift" name="new_value" required>
+                    <label for="end_time">End Time:</label>
+                    <input type="time" id="end_time" name="end_time" required>
 
-                <input type="submit" value="Update">
-            </form>
-        </section>
+                    <button type="submit">Insert</button>
+                </form>
+            </section>
 
-        <section>
-            <h3>Delete Doctor Shift</h3>
-            <form action="/delete_shift" method="POST">
-                <label for="doctor_id_shift_delete">Doctor ID:</label>
-                <input type="number" id="doctor_id_shift_delete" name="doctor_id" required>
+            <!-- Update Doctor Shift -->
+            <section>
+                <h3>Update Doctor Shift</h3>
+                <form action="/update_shift" method="POST">
+                    <label for="doctor_update_shift">Select Doctor:</label>
+                    <select id="doctor_update_shift" name="doctor_name" required>
+                        <option value="" disabled selected>Select a doctor</option>
+                    </select>
 
-                <label for="day_of_week_delete">Day of Week:</label>
-                <select id="day_of_week_delete" name="day_of_week" required>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                </select>
+                    <label for="day_of_week_update">Day of Week:</label>
+                    <select id="day_of_week_update" name="day_of_week" required>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
 
-                <input type="submit" value="Delete">
-            </form>
-        </section>
+                    <label for="attribute_shift">Attribute to Update:</label>
+                    <select id="attribute_shift" name="attribute" required>
+                        <option value="StartTime">Start Time</option>
+                        <option value="EndTime">End Time</option>
+                    </select>
 
-        <!-- Doctor Leaves Management -->
-        <h2>Manage Doctor Leaves</h2>
+                    <label for="new_value_shift">New Value:</label>
+                    <input type="time" id="new_value_shift" name="new_value" required>
 
-        <section>
-            <h3>Insert Doctor Leave</h3>
-            <form action="/insert_leave" method="POST">
-                <label for="doctor_id_leave">Doctor ID:</label>
-                <input type="number" id="doctor_id_leave" name="doctor_id" required>
+                    <button type="submit">Update</button>
+                </form>
+            </section>
 
-                <label for="leave_start">Leave Start:</label>
-                <input type="date" id="leave_start" name="leave_start" required>
+            <!-- Delete Doctor Shift -->
+            <section>
+                <h3>Delete Doctor Shift</h3>
+                <form action="/delete_shift" method="POST">
+                    <label for="doctor_delete_shift">Select Doctor:</label>
+                    <select id="doctor_delete_shift" name="doctor_name" required>
+                        <option value="" disabled selected>Select a doctor</option>
+                    </select>
 
-                <label for="leave_end">Leave End:</label>
-                <input type="date" id="leave_end" name="leave_end" required>
+                    <label for="delete_day_of_week">Day of Week:</label>
+                    <select id="delete_day_of_week" name="day_of_week" required>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
 
-                <label for="reason">Reason:</label>
-                <textarea id="reason" name="reason" rows="3"></textarea>
+                    <button type="submit">Delete</button>
+                </form>
+            </section>
+        </div>
 
-                <input type="submit" value="Insert">
-            </form>
- 
-        <section>
-            <h3>Update Doctor Leave</h3>
-            <form action="/update_leave" method="POST">
-                <label for="doctor_id_leave_update">Doctor ID:</label>
-                <input type="number" id="doctor_id_leave_update" name="doctor_id" required>
+        <!-- Leaves Section -->
+        <div id="leaves-section" class="section">
+            <h2>Manage Leaves</h2>
 
-                <label for="leave_start_update">Leave Start:</label>
-                <input type="date" id="leave_start_update" name="leave_start" required>
+            <!-- Insert Leave -->
+            <section>
+                <h3>Insert Leave</h3>
+                <form action="/insert_leave" method="POST">
+                    <label for="doctor_insert_leave">Select Doctor:</label>
+                    <select id="doctor_insert_leave" name="doctor_name" required>
+                        <option value="" disabled selected>Select a doctor</option>
+                    </select>
 
-                <label for="leave_end_update">Leave End:</label>
-                <input type="date" id="leave_end_update" name="leave_end" required>
+                    <label for="leave_date">Leave Date:</label>
+                    <input type="date" id="leave_date" name="leave_date" required>
 
-                <label for="reason_update">Reason:</label>
-                <textarea id="reason_update" name="reason" rows="3"></textarea>
+                    <button type="submit">Insert</button>
+                </form>
+            </section>
 
-                <input type="submit" value="Update">
-            </form>
-        </section>
+            <!-- Update Leave -->
+            <section>
+                <h3>Update Leave</h3>
+                <form action="/update_leave" method="POST">
+                    <label for="doctor_update_leave">Select Doctor:</label>
+                    <select id="doctor_update_leave" name="doctor_name" required>
+                        <option value="" disabled selected>Select a doctor</option>
+                    </select>
 
-        <section>
-            <h3>Delete Doctor Leave</h3>
-            <form action="/delete_leave" method="POST">
-                <label for="doctor_id_leave_delete">Doctor ID:</label>
-                <input type="number" id="doctor_id_leave_delete" name="doctor_id" required>
+                    <label for="leave_update_date">Leave Date:</label>
+                    <input type="date" id="leave_update_date" name="leave_date" required>
 
-                <label for="leave_start_delete">Leave Start:</label>
-                <input type="date" id="leave_start_delete" name="leave_start" required>
+                    <label for="leave_status">Status:</label>
+                    <select id="leave_status" name="status" required>
+                        <option value="Approved">Approved</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
 
-                <input type="submit" value="Delete">
-            </form>
-        </section>
+                    <button type="submit">Update</button>
+                </form>
+            </section>
+
+            <!-- Delete Leave -->
+            <section>
+                <h3>Delete Leave</h3>
+                <form action="/delete_leave" method="POST">
+                    <label for="doctor_delete_leave">Select Doctor:</label>
+                    <select id="doctor_delete_leave" name="doctor_name" required>
+                        <option value="" disabled selected>Select a doctor</option>
+                    </select>
+
+                    <label for="leave_delete_date">Leave Date:</label>
+                    <input type="date" id="leave_delete_date" name="leave_date" required>
+
+                    <button type="submit">Delete</button>
+                </form>
+            </section>
+        </div>
     </div>
 </body>
+
 </html>

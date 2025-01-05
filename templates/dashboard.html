@@ -212,6 +212,81 @@
   font-size: 1em;
   color: #6c63ff; /* Highlight for first span */
 }
+/* Doctors Section Card */
+.doctor-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.doctor-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Doctor Name */
+.doctor-header h4 {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #4a4a4a;
+  margin-bottom: 10px;
+}
+
+/* Shift and Hours Details */
+.doctor-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.shift-details p {
+  font-size: 1em;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.total-hours {
+  font-size: 1em;
+  font-weight: bold;
+  color: #6c63ff;
+}
+
+.total-hours span {
+  color: #333;
+}
+
+/* Section Header and Button */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2em;
+  color: #4a4a4a;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-weight: bold;
+}
+
+.add-icon {
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #6c63ff;
+  background-color: #e0e0e0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.add-icon:hover {
+  background-color: #d1d1d1;
+  transform: scale(1.1);
+}
+
 
   </style>
 </head>
@@ -289,34 +364,36 @@
     </div>
   </div>
 
-  <!-- Doctors Section -->
-  <div class="section">
-    <div class="section-header">
-      <h3>Doctors (Total: 4)</h3>
-      <span class="add-icon" onclick="changeDoc()"><i class="fa fa-pencil" aria-hidden="true"></i>
-
-      </span>
+<!-- Doctors Section -->
+<div class="section">
+  <div class="section-header">
+    <h3>Doctors (Total: {{ doctor_shifts|length }})</h3>
+    <span class="add-icon" onclick="changeDoc()"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+  </div>
+  <div class="section-content">
+    {% for doctor, details in doctor_shifts.items() %}
+    <div class="doctor-card">
+      <div class="doctor-header">
+        <h4>{{ doctor }}</h4>
+      </div>
+      <div class="doctor-details">
+        <div class="shift-details">
+          <strong>Shift(s):</strong>
+          {% for shift in details.shifts %}
+          <p>{{ shift }}</p>
+          {% endfor %}
+        </div>
+        <div class="total-hours">
+          <strong>Total Hours Worked:</strong>
+          <span>{{ details.total_hours|round(2) }} hours</span>
+        </div>
+      </div>
     </div>
-    <div class="section-content">
-      <div class="item">
-        <span>Dr. John Smith</span>
-        <span>Shift: 9:00 AM - 1:00 PM</span>
-      </div>
-      <div class="item">
-        <span>Dr. Jane Doe</span>
-        <span>Shift: 1:00 PM - 5:00 PM</span>
-      </div>
-      <div class="item">
-        <span>Dr. Alex Brown</span>
-        <span>Shift: 5:00 PM - 9:00 PM</span>
-      </div>
-      <div class="item">
-        <span>Dr. Lisa Green</span>
-        <span>Shift: 9:00 AM - 1:00 PM</span>
-      </div>
-    </div>
+    {% endfor %}
   </div>
 </div>
+
+
 
 <script>
 

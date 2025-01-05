@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
-  <style>
+<style>
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -50,7 +51,7 @@ body {
 }
 
 input {
-  width: 100%;
+  width: 95%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -107,6 +108,21 @@ input {
 }
 
 
+.role-dropdown {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.role-message {
+  margin-top: 10px;
+  font-size: 16px;
+  color:  #007bff;
+}
+
+
 footer {
   text-align: center;
   background: linear-gradient(45deg, #6a11cb, #2575fc);
@@ -124,61 +140,38 @@ footer .footer-links a {
 footer p {
   margin: 0;
 }
-.alert-container {
-  margin-bottom: 20px;
-}
-
-.alert-error {
-  color: red;
-  border: 1px solid red;
-  padding: 10px;
-  background-color: #f8d7da;
-}
-
-.alert-success {
-  color: green;
-  border: 1px solid green;
-  padding: 10px;
-  background-color: #d4edda;
-}
-
 </style>
 </head>
 <body>
+  <form method="post" action="file.php">
   <div class="login-container">
     <div class="form-box">
       <div class="tabs">
         <button class="tab-btn active">Login</button>
       </div>
-      
-      <!-- Display flash messages if there are any -->
-      {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="alert-container">
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-              {{ message }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-      {% endwith %}
-
-      <!-- Login form -->
-      <form method="POST" action="{{ url_for('login') }}">
+      <form id="login-form">
         <div class="input-group">
           <input type="email" id="email" name="email" placeholder="Email Address" required>
         </div>
         <div class="input-group">
-          <input type="password" id="password" name="password" placeholder="Password" required>
+          <input type="password" id="password" name="pass" placeholder="Password" required>
           <span class="toggle-password" onclick="togglePassword()">👁</span>
+          
+
         </div>
-        <button type="submit" class="login-btn">Login</button>
+        <label for="role-selector" style="color: #007bff;">Choose a role:</label>
+        <select id="role-selector" class="role-dropdown" >
+          <option value="" disabled selected>Select a role</option>
+          <option value="doctor">Doctor</option>
+          <option value="secretary">Secretary</option>
+        </select>
+        <br><br>
+        <button type="submit" class="login-btn" name="sign">Login</button>
         <a href="#" class="forgot-password">I forgot my password</a>
       </form>
+      
     </div>
   </div>
-
   <footer>
     <p>Copyright © 2025 Bright Smile Dental Clinic By Engineering Students.</p>
     <div class="footer-links">
@@ -189,14 +182,13 @@ footer p {
       <a href="#">Facebook</a>
     </div>
   </footer>
-  
-  <script>
-    // Function to toggle password visibility
-    function togglePassword() {
-      const passwordField = document.getElementById('password');
-      const type = passwordField.type === 'password' ? 'text' : 'password';
-      passwordField.type = type;
-    }
-  </script>
+</form>
 </body>
 </html>
+<script>// Function to toggle password visibility
+  function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+  }
+
+  </script>
