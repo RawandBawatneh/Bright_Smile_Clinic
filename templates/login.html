@@ -1,194 +1,34 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f8f8f8;
-}
-
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 80px);
-}
-
-.form-box {
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  width: 360px;
-}
-
-.tabs {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 40px;
-  border-bottom: 5px solid #007bff;
-}
-
-.tab-btn.active {
-  background-color: #007bff; 
-  color: #fff; 
-}
-
-.tab-btn:hover {
-  background-color: #007bff; 
-  color: #fff;
-}
-
-.input-group {
-  margin-bottom: 15px;
-  position: relative;
-}
-
-input {
-  width: 95%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 14px;
-}
-
-.toggle-password {
-  position: absolute;
-  top: 50%;
-  right: 5px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #777;
-}
-
-.login-btn {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-}
-
-.forgot-password {
-  display: block;
-  margin-top: 15px;
-  color: #007bff;
-  text-decoration: none;
-  align-items: center;
-  justify-content: center;
-}
-
-.tab-link, .tab-btn {
-  display: inline-block;
-  background: none;
-  border: none;
-  padding: 10px 20px;
-  font-size: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-}
-
-.tab-link:hover {
-  text-decoration: underline;
-}
-
-.tab-btn.active {
-  color: #fff;
-  background-color: #007bff;
-  border-radius: 5px 5px 0 0;
-}
-
-
-.role-dropdown {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 14px;
-}
-
-.role-message {
-  margin-top: 10px;
-  font-size: 16px;
-  color:  #007bff;
-}
-
-
-footer {
-  text-align: center;
-  background: linear-gradient(45deg, #6a11cb, #2575fc);
-  color: #fff;
-  padding: 15px 0;
-}
-
-footer .footer-links a {
-  color: #fff;
-  text-decoration: none;
-  margin: 0 10px;
-  font-size: 14px;
-}
-
-footer p {
-  margin: 0;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
 </head>
 <body>
-  <form method="post" action="file.php">
-  <div class="login-container">
-    <div class="form-box">
-      <div class="tabs">
-        <button class="tab-btn active">Login</button>
-      </div>
-      <form id="login-form">
-        <div class="input-group">
-          <input type="email" id="email" name="email" placeholder="Email Address" required>
-        </div>
-        <div class="input-group">
-          <input type="password" id="password" name="pass" placeholder="Password" required>
-          <span class="toggle-password" onclick="togglePassword()">👁</span>
-          
+    <h2>Login</h2>
 
-        </div>
-        <label for="role-selector" style="color: #007bff;">Choose a role:</label>
-        <select id="role-selector" class="role-dropdown" >
-          <option value="" disabled selected>Select a role</option>
-          <option value="doctor">Doctor</option>
-          <option value="secretary">Secretary</option>
-        </select>
-        <br><br>
-        <button type="submit" class="login-btn" name="sign">Login</button>
-        <a href="#" class="forgot-password">I forgot my password</a>
-      </form>
-      
-    </div>
-  </div>
-  <footer>
-    <p>Copyright © 2025 Bright Smile Dental Clinic By Engineering Students.</p>
-    <div class="footer-links">
-      <a href="#">Terms & Conditions |</a>
-      <a href="#">Privacy Policy |</a>
-      <a href="#">Data & Security |</a>
-      <a href="#">Language |</a>
-      <a href="#">Facebook</a>
-    </div>
-  </footer>
-</form>
+    <!-- عرض الرسائل في حالة وجود خطأ -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li style="color:red;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- نموذج تسجيل الدخول -->
+    <form method="POST">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+
 </body>
 </html>
-<script>// Function to toggle password visibility
-  function togglePassword() {
-    const passwordInput = document.getElementById('password');
-    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-  }
-
-  </script>

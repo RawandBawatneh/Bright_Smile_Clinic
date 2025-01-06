@@ -1,77 +1,52 @@
-from flask import Flask, request, jsonify
-import mysql.connector
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import pymysql
 
-
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # For storing messages securely
 
-# Database connection configuration
+# Connect to the database
 def connect_db():
     return pymysql.connect(
         host='localhost',
         user='root',
         password='0569458641#2003',
-        database='ClinicManagement'
+        database='ClinicManagement',
+        cursorclass=pymysql.cursors.DictCursor  # This ensures that results are returned as dictionaries
     )
 
-def execute_query(query, params=None):
-    """Helper function to execute database queries."""
-    conn = connect_db()
-    cursor = conn.cursor()
-    try:
-        cursor.execute(query, params)
-        conn.commit()
-        return cursor
-    except pymysql.MySQLError as err:
-        print(f"Error: {err}")
-        conn.rollback()
-        return None
-    finally:
-        cursor.close()
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        # Connect to the database and verify user
+        conn = connect_db()  # Corrected function call
+        cursor = conn.cursor()
+
+        query = "SELECT Email, PasswordHash, UserType FROM users WHERE Email=%s"
+        cursor.execute(query, (email,))
+        user = cursor.fetchone()
         conn.close()
 
+        if user:
+            email_from_db = user['Email']
+            pass_from_db = user['PasswordHash']
+
+            # Verify the password
+            if email_from_db == email and pass_from_db == password:
+                return redirect(url_for('dashboard'))  # Redirect to dashboard on successful login
+            else:
+                flash('Wrong password. Please try again.', 'danger')  # Flash error message for incorrect password
+        else:
+            flash('Email does not exist.', 'danger')  # Flash error message if email is not found
+
+    return render_template('login.html')  # Render login page
+
 @app.route('/')
-def home():
-    return render_template('test.html')
-@app.route('/insert_shift', methods=['POST'])
-def insert_shift():
-    data = request.form
-
-    # Step 1: Fetch DoctorID based on Doctor's Name
-    doctor_name_query = "SELECT DoctorID FROM Doctor WHERE Name = %s"
-    doctor_name_params = (data['doctor_name'],)  # 'doctor_name' comes from the frontend
-    doctor_id_result = execute_query(doctor_name_query, doctor_name_params)
-
-    if not doctor_id_result:
-        return jsonify({'message': f"Doctor '{data['doctor_name']}' not found."}), 400
-
-    doctor_id = doctor_id_result[0]['DoctorID']  # Fetch the DoctorID
-
-    # Step 2: Insert Shift with Resolved DoctorID
-    query = """
-        INSERT INTO DoctorShifts (DoctorID, DayOfWeek, StartTime, EndTime) 
-        VALUES (%s, %s, %s, %s)
-    """
-    params = (doctor_id, data['day_of_week'], data['start_time'], data['end_time'])
-    result = execute_query(query, params)
-
-    if result:
-        return jsonify({'message': 'Shift inserted successfully.'}), 201
-    return jsonify({'message': 'Failed to insert shift.'}), 400
-@app.route('/get_doctors', methods=['GET'])
-def get_doctors():
-    query = """
-        SELECT DISTINCT Doctor.Name 
-        FROM Doctor
-        INNER JOIN DoctorShifts ON Doctor.DoctorID = DoctorShifts.DoctorID
-    """
-    result = execute_query(query)
-    if result:
-        # Convert result into a list of dictionaries for JSON response
-        doctors = [{'Name': row[0]} for row in result]
-        return jsonify(doctors), 200
-    return jsonify({'message': 'Failed to fetch doctors.'}), 400
+def dashboard():
+    return render_template('dashboard.html')  # Main dashboard page after successful login
+    
 
 if __name__ == '__main__':
     app.run(debug=True)

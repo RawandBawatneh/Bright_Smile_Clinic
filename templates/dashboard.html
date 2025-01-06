@@ -291,6 +291,7 @@
   </style>
 </head>
 <body>
+
 <!-- Navbar -->
 <div class="navbar">
   <div class="logo">
@@ -299,8 +300,8 @@
   </div>
   
   <div class="menu">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="myClinic.html" >My Clinic</a>
+    <a href="{{url_for('dashboard')}}">Dashboard</a>
+    <a href="{{url_for('myClinic')}}" >My Clinic</a>
     <a href="#" >Data Security</a>
     <a href="#" >Blogs</a>
     <a href="#" >Contact</a>
@@ -323,9 +324,9 @@
     <div class="section-header">
       <h3>Appointments</h3>
       
-      <span class="add-icon" onclick="changeApp()"><i class="fa fa-pencil" aria-hidden="true"></i>
-
-      </span>
+      <a class="add-icon" href="{{ url_for('add_appointment') }}">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+      </a>
       
     </div>
     <div class="section-content">
@@ -344,8 +345,9 @@
   <div class="section">
     <div class="section-header">
       <h3>Patients</h3>
-      <span class="add-icon" onclick="changePa()"><i class="fa fa-pencil" aria-hidden="true"></i>
-
+      <a class="add-icon" href="{{ url_for('add_patient') }}">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+      </a>
       </span>
     </div>
     <div class="section-content">
@@ -368,7 +370,9 @@
 <div class="section">
   <div class="section-header">
     <h3>Doctors (Total: {{ doctor_shifts|length }})</h3>
-    <span class="add-icon" onclick="changeDoc()"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+    <a class="add-icon" href="{{ url_for('add_doctor') }}">
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+    </a>
   </div>
   <div class="section-content">
     {% for doctor, details in doctor_shifts.items() %}
@@ -408,10 +412,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       // Handle redirect for specific tabs
-      if (this.dataset.tab === 'my-clinic') {
-        window.location.href = "myClinc.html";
+      if (this.dataset.tab === 'myClinic') {
+        window.location.href = "{{url_for('myClinic')}}";
       } else if (this.dataset.tab === 'dashboard') {
-        window.location.href = "dashboard.html";
+        window.location.href = "{{url_for('dashboard')}}";
       }
 
       // Remove active class from all tabs and add it to the clicked tab
@@ -422,17 +426,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-function changePa(){
-  window.location.href="add_patient.html"
-}
 
-function changeApp(){
-  window.location.href="add_appointment.html"
-}
-
-function changeDoc(){
-  window.location.href="add_doctor.html"
-}
+  
 
 
 </script>
