@@ -108,11 +108,6 @@ def fetch_patient_names():
     patients = execute_query(query, fetch=True)
     return jsonify(patients)
 
-@app.route('/fetch_doctor_names', methods=['GET'])
-def get_doctor_names():
-    query = "SELECT DoctorID, Name FROM Doctor"
-    doctors = execute_query(query, fetch=True)
-    return jsonify(doctors)
 
 if __name__ == '__main__':
     app.run(debug=True)

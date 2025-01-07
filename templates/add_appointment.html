@@ -232,21 +232,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Fetch doctor names on page load
-        $(document).ready(function () {
-            $.get('/fetch_doctor_names', function (data) {
-                if (data) {
-                    data.forEach(doctor => {
-                        $('#doctor-name').append(`<option value="${doctor.DoctorID}">${doctor.Name}</option>`);
-                        $('#doctor_id').append(`<option value="${doctor.DoctorID}">${doctor.Name}</option>`);
-                    });
-                } else {
-                    alert('Failed to load doctor names.');
-                }
-            }).fail(function () {
-                alert('Error connecting to the server.');
-            });
-        });
+
         // Fetch patient names on page load
 $(document).ready(function () {
     $.get('/fetch_patient_names', function (data) {

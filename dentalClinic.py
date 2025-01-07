@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, url_for
+from flask import Flask, jsonify, render_template, url_for
 import pymysql
 from datetime import datetime
 
@@ -19,6 +19,7 @@ def connect_db():
 # Function to fetch doctor shifts and calculate total hours worked
 @app.route('/')
 def dashboard():
+    
     # Initialize a connection to the database
     connection = None
     cursor = None
@@ -90,7 +91,11 @@ def income_report():
     return render_template('invoice.html', income_data=income_data)
 @app.route('/add_appointment')
 def add_appointment():
-    return render_template('add_appointment.html')
+    # Fetch patients and doctors to display in the form
+    patients = execute_query("SELECT PatientID, FirstName, LastName FROM Patient", fetch=True)
+    doctors = execute_query("SELECT DoctorID, Name FROM Doctor", fetch=True)
+    return render_template('add_appointment.html', patients=patients, doctors=doctors)
+
 # Route for adding patient
 @app.route('/add_patient')
 def add_patient():
@@ -111,6 +116,25 @@ def add_invoice():
 @app.route('/invoice')
 def invoice():
     return render_template('invoice.html')
+@app.route('/MedicalProcedure')
+def MedicalProcedure():
+    return render_template('MedicalProcedure.html')
+@app.route('/XrayImage')
+def XrayImage():
+    return render_template('XrayImage.html')
+@app.route('/fetch_patient_names')
+def fetch_patient_names():
+    query = "SELECT PatientID, FirstName, LastName FROM Patient"
+    patients = execute_query(query, fetch=True)
+    return jsonify(patients)
+
+@app.route('/fetch_doctor_names', methods=['GET'])
+def get_doctor_names():
+    query = "SELECT DoctorID, Name FROM Doctor"
+    doctors = execute_query(query, fetch=True)
+    return jsonify(doctors)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

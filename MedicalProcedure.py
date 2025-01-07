@@ -1,109 +1,183 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
 import pymysql
 
 app = Flask(__name__)
+app.secret_key = "secret_key"
 
-# Database connection configuration
-def connect_db():
-    return pymysql.connect(
-        host='localhost',
-        user='root',
-        password='0569458641#2003',
-        database='ClinicManagement'
-    )
+# MySQL connection configuration
+db = pymysql.connect(
+    host="localhost",
+    user="root",
+    password="0569458641#2003",
+    database="ClinicManagement"
+)
 
-def execute_query(query, params=None, fetch=False):
-    """Helper function to execute database queries."""
-    conn = connect_db()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)  # Use DictCursor for dictionary-like rows
+# Home route
+@app.route('/')
+def MedicalProcedure():
     try:
-        cursor.execute(query, params)
-        if fetch:
-            result = cursor.fetchall()  # Fetch results if needed
-        else:
-            result = cursor.rowcount
-        conn.commit()
-        return result
-    except pymysql.MySQLError as err:
-        print(f"Database Error: {err}")
-        conn.rollback()
-        return None
-    finally:
-        cursor.close()
-        conn.close()
+        # Fetch Patients 
+        with db.cursor() as cursor:
+            cursor.execute("SELECT PatientID, CONCAT(FirstName, ' ', LastName) AS PatientName FROM Patient")
+            patients = cursor.fetchall()
+        # Fetch Patients from MedicalProcedure table (those who have procedures)
+        with db.cursor() as cursor:
+            cursor.execute("""
+                SELECT DISTINCT p.PatientID, CONCAT(p.FirstName, ' ', p.LastName) AS PatientName
+                FROM MedicalProcedure mp
+                JOIN Patient p ON mp.PatientID = p.PatientID
+            """)
+            patientsMed = cursor.fetchall()
 
-# Insert Medical Procedure
-@app.route('/insert_procedure', methods=['POST'])
+        # Fetch Doctors
+        with db.cursor() as cursor:
+            cursor.execute("SELECT DoctorID, Name FROM Doctor")
+            doctors = cursor.fetchall()
+
+        # Fetch Procedures
+        with db.cursor() as cursor:
+            cursor.execute("SELECT ProcedureID, ProcedureName FROM MedicalProcedure")
+            procedures = cursor.fetchall()
+
+        return render_template(
+            'MedicalProcedure.html',
+            patientsMed=patientsMed,
+            patients=patients,
+            doctors=doctors,
+            procedures=procedures
+        )
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+# Insert Procedure
+@app.route('/insert', methods=['POST'])
 def insert_procedure():
-    data = request.form
-    query = """
-        INSERT INTO MedicalProcedure (DoctorID, ProcedureName, ProcedureCost, InsuranceCoverage) 
-        VALUES (%s, %s, %s, %s)
-    """
-    params = (data['doctor_id'], data['procedure_name'], data['procedure_cost'], data.get('insurance_coverage', 0.00))
-    result = execute_query(query, params)
-    if result:
-        return jsonify({'message': 'Procedure inserted successfully.'}), 201
-    return jsonify({'message': 'Failed to insert procedure.'}), 400
+    try:
+        data = request.form
+        with db.cursor() as cursor:
+            query = """
+            INSERT INTO MedicalProcedure (DoctorID, PatientID, ProcedureName, ProcedureCost, 
+                                           InsuranceCoverage, TreatmentName, TreatmentCost, 
+                                           InsuranceDiscount)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (
+                data['doctor_name'],
+                data['patient_name'],
+                data['procedure_name'],
+                data['procedure_cost'],
+                data.get('insurance_coverage', 0),
+                data['treatment_name'],
+                data['treatment_cost'],
+                data.get('insurance_discount', 0)
+            ))
+            db.commit()
+        flash("Procedure inserted successfully!")
+    except Exception as e:
+        flash(f"Error: {str(e)}")
+    return redirect(url_for('MedicalProcedure'))
 
-# Update Medical Procedure
-@app.route('/update_procedure', methods=['POST'])
+# Update Procedure
+@app.route('/update', methods=['POST'])
 def update_procedure():
-    data = request.form
+    try:
+        data = request.form
+        patient_name = data['patient_name']
+        procedure_name = data['procedure_name_update']
+        new_cost = data.get('procedure_cost_update')
+        new_coverage = data.get('insurance_coverage_update')
+        new_treatment_name = data.get('treatment_name_update')
+        new_treatment_cost = data.get('treatment_cost_update')
+        new_discount = data.get('insurance_discount_update')
 
-    # Step 1: Fetch ProcedureID based on ProcedureName
-    procedure_name_query = "SELECT ProcedureID FROM MedicalProcedure WHERE ProcedureName = %s"
-    procedure_id_result = execute_query(procedure_name_query, (data['procedure_name'],), fetch=True)
+        with db.cursor() as cursor:
+            # First, find the PatientID and ProcedureID
+            cursor.execute("""
+                SELECT p.PatientID, mp.ProcedureID 
+                FROM MedicalProcedure mp
+                JOIN Patient p ON mp.PatientID = p.PatientID
+                WHERE CONCAT(p.FirstName, ' ', p.LastName) = %s AND mp.ProcedureName = %s
+            """, (patient_name, procedure_name))
+            result = cursor.fetchone()
 
-    if not procedure_id_result:
-        return jsonify({'message': f"Procedure '{data['procedure_name']}' not found."}), 400
+            if result:
+                patient_id = result[0]
+                procedure_id = result[1]
 
-    procedure_id = procedure_id_result[0]['ProcedureID']  # Fetch the ProcedureID
+                # Build the update query
+                update_query = "UPDATE MedicalProcedure SET "
+                params = []
 
-    # Step 2: Update Procedure with Resolved ProcedureID
-    update_query = f"""
-        UPDATE MedicalProcedure 
-        SET {data['attribute']} = %s 
-        WHERE ProcedureID = %s
-    """
-    params = (data['new_value'], procedure_id)
-    result = execute_query(update_query, params)
+                if new_cost:
+                    update_query += "ProcedureCost = %s, "
+                    params.append(new_cost)
+                if new_coverage:
+                    update_query += "InsuranceCoverage = %s, "
+                    params.append(new_coverage)
+                if new_treatment_name:
+                    update_query += "TreatmentName = %s, "
+                    params.append(new_treatment_name)
+                if new_treatment_cost:
+                    update_query += "TreatmentCost = %s, "
+                    params.append(new_treatment_cost)
+                if new_discount:
+                    update_query += "InsuranceDiscount = %s, "
+                    params.append(new_discount)
 
-    if result:
-        return jsonify({'message': 'Procedure updated successfully.'}), 200
-    return jsonify({'message': 'Failed to update procedure.'}), 400
+                # Clean up the trailing comma
+                update_query = update_query.rstrip(', ')
 
-# Delete Medical Procedure
-@app.route('/delete_procedure', methods=['POST'])
+                # Add the WHERE clause to ensure we update the correct row
+                update_query += " WHERE ProcedureID = %s AND PatientID = %s"
+                params.extend([procedure_id, patient_id])
+
+                # Execute the update
+                cursor.execute(update_query, tuple(params))
+                db.commit()
+                flash("Procedure updated successfully!")
+            else:
+                flash(f"No matching procedure found for {patient_name} and {procedure_name}.")
+    except Exception as e:
+        flash(f"Error: {str(e)}")
+
+    return redirect(url_for('MedicalProcedure'))
+
+# Delete Procedure
+@app.route('/delete', methods=['POST'])
 def delete_procedure():
-    data = request.form
+    try:
+        data = request.form
+        patient_name = data['patient_name']
+        procedure_name = data['procedure_name_delete']
 
-    # Step 1: Fetch ProcedureID based on ProcedureName
-    procedure_name_query = "SELECT ProcedureID FROM MedicalProcedure WHERE ProcedureName = %s"
-    procedure_id_result = execute_query(procedure_name_query, (data['procedure_name'],), fetch=True)
+        with db.cursor() as cursor:
+            # Find the PatientID and ProcedureID for the given patient and procedure
+            cursor.execute("""
+                SELECT p.PatientID, mp.ProcedureID 
+                FROM MedicalProcedure mp
+                JOIN Patient p ON mp.PatientID = p.PatientID
+                WHERE CONCAT(p.FirstName, ' ', p.LastName) = %s AND mp.ProcedureName = %s
+            """, (patient_name, procedure_name))
+            result = cursor.fetchone()
 
-    if not procedure_id_result:
-        return jsonify({'message': f"Procedure '{data['procedure_name']}' not found."}), 400
+            if result:
+                patient_id = result[0]
+                procedure_id = result[1]
 
-    procedure_id = procedure_id_result[0]['ProcedureID']  # Fetch the ProcedureID
+                # Delete the procedure
+                cursor.execute("""
+                    DELETE FROM MedicalProcedure 
+                    WHERE ProcedureID = %s AND PatientID = %s
+                """, (procedure_id, patient_id))
+                db.commit()
+                flash("Procedure deleted successfully!")
+            else:
+                flash(f"No matching procedure found for {patient_name} and {procedure_name}.")
+    except Exception as e:
+        flash(f"Error: {str(e)}")
 
-    # Step 2: Delete Procedure with Resolved ProcedureID
-    delete_query = "DELETE FROM MedicalProcedure WHERE ProcedureID = %s"
-    result = execute_query(delete_query, (procedure_id,))
+    return redirect(url_for('MedicalProcedure'))
 
-    if result > 0:  # Check if rows were affected
-        return jsonify({'message': 'Procedure deleted successfully.'}), 200
-    return jsonify({'message': 'Failed to delete procedure.'}), 400
-
-# Fetch doctor names for dropdown
-@app.route('/fetch_doctor_names', methods=['GET'])
-def fetch_doctor_names():
-    query = "SELECT Name FROM Doctor"
-    result = execute_query(query, fetch=True)
-    if result:
-        doctors = [{'Name': row['Name']} for row in result]
-        return jsonify(doctors), 200
-    return jsonify({'message': 'Failed to fetch doctor names.'}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

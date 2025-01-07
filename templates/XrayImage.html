@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-ray Image Management</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #007BFF, #8E44AD); 
+        }
+
+        .header {
+            background: #0073b7;
+            color: white;
+            text-align: left;
+            padding: 30px 50px;
+            font-size: 2.5em;
+            font-weight: bold;
+            font-style: oblique;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header img {
+            width: 80px;
+            margin-right: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0073b7;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f0faff;
+            border: 1px solid #0073b7;
+            border-radius: 15px;
+        }
+
+        form {
+            margin: 10px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: linear-gradient(to right, #007BFF, #8E44AD); 
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1em;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            background-color: #005a93;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+        // Fetch patient names dynamically when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/fetch_patient_names')
+                .then(response => response.json())
+                .then(data => {
+                    const insertSelect = document.getElementById('patient-id-insert');
+                    const updateSelect = document.getElementById('patient-name-update');
+                    const deleteSelect = document.getElementById('patient-name-delete');
+
+                    data.forEach(patient => {
+                        const option = new Option(patient.PatientName, patient.PatientID);
+                        insertSelect.add(option.cloneNode(true));
+                        updateSelect.add(option.cloneNode(true));
+                        deleteSelect.add(option.cloneNode(true));
+                    });
+                })
+                .catch(error => console.error('Error fetching patient names:', error));
+        });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <img src="https://i.pinimg.com/736x/93/67/66/93676657facf845a38f6550c47dcccc4.jpg" alt="Logo">
+        Bright Smile Hospital - X-ray Image Management
+    </div>
+
+    <div class="container">
+        <h2>Manage X-ray Images</h2>
+
+        <!-- Insert X-ray Image -->
+        <form action="/insert_xray_image" method="POST">
+            <h3>Insert X-ray Image</h3>
+            <label for="patient-id-insert">Patient Name:</label>
+            <select id="patient-id-insert" name="patient_id" required>
+                <option value="" disabled selected>Select a Patient</option>
+            </select>
+            <label for="xray-image-path">X-ray Image Path:</label>
+            <input type="text" id="xray-image-path" name="xray_image_path" placeholder="Enter image path" required>
+            <button type="submit">Insert</button>
+        </form>
+
+        <!-- Update X-ray Image -->
+        <form action="/update_xray_image" method="POST">
+            <h3>Update X-ray Image</h3>
+            <label for="patient-name-update">Patient Name:</label>
+            <select id="patient-name-update" name="patient_id" required>
+                <option value="" disabled selected>Select a Patient</option>
+            </select>
+            <label for="xray-image-path-old">Old X-ray Image Path:</label>
+            <input type="text" id="xray-image-path-old" name="xray_image_path_old" placeholder="Enter old image path" required>
+            <label for="xray-image-path-update">New X-ray Image Path:</label>
+            <input type="text" id="xray-image-path-update" name="xray_image_path" placeholder="Enter new image path" required>
+            <button type="submit">Update</button>
+        </form>
+
+        <!-- Delete X-ray Image -->
+        <form action="/delete_xray_image" method="POST">
+            <h3>Delete X-ray Image</h3>
+            <label for="patient-name-delete">Patient Name:</label>
+            <select id="patient-name-delete" name="patient_id" required>
+                <option value="" disabled selected>Select a Patient</option>
+            </select>
+            <label for="xray-image-path-delete">X-ray Image Path to Delete:</label>
+            <input type="text" id="xray-image-path-delete" name="xray_image_path" placeholder="Enter image path to delete" required>
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+</body>
+</html>

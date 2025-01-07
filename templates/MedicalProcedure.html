@@ -1,250 +1,193 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Procedure Management</title>
     <style>
+        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #007BFF, #8E44AD); 
-        }
-
-        .header {
-            background: #0073b7;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
             color: white;
-            text-align: left;
-            padding: 30px 50px;
-            font-size: 2.5em;
-            font-weight: bold;
-            font-style: oblique;
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .header img {
-            width: 80px;
-            margin-right: 20px;
-            border-radius: 50%;
-            display: inline-block;
+        h1, h2 {
+            text-align: center;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
         }
 
         .container {
-            width: 80%;
+            width: 90%;
+            max-width: 800px;
             margin: 30px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #0073b7;
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        section {
-            margin: 20px 0;
-            padding: 20px;
-            background-color: #f0faff;
-            border: 1px solid #0073b7;
-            border-radius: 15px;
+            background: #fff;
+            color: #333;
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         form {
-            margin: 10px 0;
+            margin-top: 20px;
         }
 
         label {
             display: block;
             margin: 10px 0 5px;
             font-weight: bold;
-            color: #333;
         }
 
-        input[type="text"], input[type="number"], input[type="decimal"], select {
+        input[type="text"], input[type="number"], select {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
+            border-radius: 5px;
+            font-size: 16px;
         }
 
-        input[type="submit"], button {
-            background: linear-gradient(to right, #007BFF, #8E44AD); 
+        button {
+            background: linear-gradient(to right, #007BFF, #8E44AD);
             color: white;
-            padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 1.1em;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
         }
 
-        input[type="submit"]:hover, button:hover {
-            background-color: #005a93;
+        button:hover {
+            background: #005a93;
+            transform: translateY(-2px);
         }
 
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
+        button:active {
+            transform: translateY(0);
         }
 
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #007BFF;
+            border-bottom: 2px solid #007BFF;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
         }
     </style>
-    <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Fetch doctor names for Insert, Update, and Delete Medical Procedure sections
-    fetch('/fetch_doctor_names') // Adjust the URL if necessary
-        .then(response => response.json())
-        .then(data => {
-            console.log('Doctor Names for Insert, Update, and Delete Medical Procedure:', data); // Debugging log
-
-            // Ensure data is an array and contains doctor information
-            if (Array.isArray(data) && data.length > 0) {
-                const doctorInsertSelect = document.getElementById('doctor_id'); // Insert procedure form
-                const doctorUpdateSelect = document.getElementById('doctor_update'); // Update procedure form
-                const doctorDeleteSelect = document.getElementById('doctor_delete'); // Delete procedure form
-
-                // Clear existing options before adding new ones
-                doctorInsertSelect.innerHTML = '';
-                doctorUpdateSelect.innerHTML = '';
-                doctorDeleteSelect.innerHTML = '';
-
-                // Add default option to the selects
-                const defaultOption = new Option('Select a Doctor', '');
-                doctorInsertSelect.add(defaultOption);
-                doctorUpdateSelect.add(defaultOption.cloneNode(true));
-                doctorDeleteSelect.add(defaultOption.cloneNode(true));
-
-                // Populate the dropdowns with doctor names, but use DoctorID as value
-                data.forEach(doctor => {
-                    const option = new Option(doctor.Name, doctor.DoctorID); // Set name as visible text, ID as value
-                    doctorInsertSelect.add(option);
-                    doctorUpdateSelect.add(option.cloneNode(true));
-                    doctorDeleteSelect.add(option.cloneNode(true));
-                });
-            } else {
-                console.log('No doctor names found or invalid data format.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching doctor names for sections:', error);
-        });
-});
-
-    </script>
-    <script>
-        // Fetch Medical Procedures dynamically when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('/get_medical_procedures')
-                .then(response => response.json())
-                .then(data => {
-                    const procedureUpdateSelect = document.getElementById('procedure_update');
-                    const procedureDeleteSelect = document.getElementById('procedure_delete');
-
-                    data.forEach(procedure => {
-                        const updateOption = document.createElement('option');
-                        const deleteOption = document.createElement('option');
-
-                        updateOption.value = procedure.ProcedureName;  // Updated to match ProcedureName
-                        updateOption.textContent = procedure.ProcedureName;
-
-                        deleteOption.value = procedure.ProcedureName;  // Updated to match ProcedureName
-                        deleteOption.textContent = procedure.ProcedureName;
-
-                        procedureUpdateSelect.appendChild(updateOption);
-                        procedureDeleteSelect.appendChild(deleteOption);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching medical procedures:', error);
-                });
-        });
-    </script>
 </head>
 <body>
     <div class="header">
-        <img src="https://i.pinimg.com/736x/93/67/66/93676657facf845a38f6550c47dcccc4.jpg" alt="Logo">
-        Bright Smile Hospital - Medical Procedure Management
+        <h1>Manage Medical Procedures</h1>
     </div>
 
     <div class="container">
-        <h2>Manage Medical Procedures</h2>
-
-        <!-- Insert Medical Procedure -->
-        <section>
-            <h3>Insert Medical Procedure</h3>
-            <form action="/insert_procedure" method="POST">
-                <label for="doctor_id">Doctor:</label>
-                <select id="doctor_id" name="DoctorID" required>
-                    <option value="">Select a Doctor</option>
+        <!-- Insert Procedure Section -->
+        <div class="section">
+            <h2>Insert Procedure</h2>
+            <form action="/insert" method="POST">
+                <label for="patient_name">Patient Name:</label>
+                <select name="patient_name" required>
+                    {% for patient in patients %}
+                    <option value="{{ patient[0] }}">{{ patient[1] }}</option>
+                    {% endfor %}
                 </select>
 
-                <label for="name">Procedure Name:</label>
-                <input type="text" id="name" name="ProcedureName" required> <!-- Changed to ProcedureName -->
+                <label for="doctor_name">Doctor Name:</label>
+                <select name="doctor_name" required>
+                    {% for doctor in doctors %}
+                    <option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
+                    {% endfor %}
+                </select>
 
-                <label for="cost">Procedure Cost:</label>
-                <input type="number" id="cost" name="ProcedureCost" step="0.01" required> <!-- Changed to ProcedureCost -->
+                <label for="procedure_name">Procedure Name:</label>
+                <input type="text" name="procedure_name" required>
+
+                <label for="procedure_cost">Procedure Cost:</label>
+                <input type="number" name="procedure_cost" step="0.01" required>
 
                 <label for="insurance_coverage">Insurance Coverage:</label>
-                <input type="number" id="insurance_coverage" name="InsuranceCoverage" step="0.01" value="0.00" required> <!-- Changed to InsuranceCoverage -->
+                <input type="number" name="insurance_coverage" step="0.01">
 
-                <input type="submit" value="Insert">
+                <label for="treatment_name">Treatment Name:</label>
+                <input type="text" name="treatment_name" required>
+
+                <label for="treatment_cost">Treatment Cost:</label>
+                <input type="number" name="treatment_cost" step="0.01" required>
+
+                <label for="insurance_discount">Insurance Discount:</label>
+                <input type="number" name="insurance_discount" step="0.01">
+
+                <button type="submit">Insert</button>
             </form>
-        </section>
+        </div>
 
-        <!-- Update Medical Procedure -->
-        <section>
-            <h3>Update Medical Procedure</h3>
-            <form action="/update_procedure" method="POST">
-                <label for="procedure_update">Procedure Name:</label>
-                <select id="procedure_update" name="ProcedureName" required> <!-- Changed to ProcedureName -->
-                    <option value="">Select Procedure</option>
+        <!-- Update Procedure Section -->
+        <div class="section">
+            <h2>Update Procedure</h2>
+            <form action="/update" method="POST">
+                <label for="patient_name_update">Patient Name:</label>
+                <select name="patient_name" required>
+                    {% for patient in  patientsMed %}
+                    <option value="{{ patient[0] }}">{{ patient[1] }}</option>
+                    {% endfor %}
                 </select>
 
-                <label for="attribute">Attribute to Update:</label>
-                <select id="attribute" name="attribute" required>
-                    <option value="ProcedureName">Procedure Name</option>
-                    <option value="ProcedureCost">Procedure Cost</option>
-                    <option value="InsuranceCoverage">Insurance Coverage</option>
+                <label for="procedure_name_update">Procedure Name:</label>
+                <select name="procedure_name_update" required>
+                    {% for procedure in procedures %}
+                    <option value="{{ procedure[1] }}">{{ procedure[1] }}</option>
+                    {% endfor %}
                 </select>
 
-                <label for="new_value">New Value:</label>
-                <input type="text" id="new_value" name="new_value" required>
+                <label for="procedure_cost_update">Procedure Cost:</label>
+                <input type="number" name="procedure_cost_update" step="0.01">
 
-                <input type="submit" value="Update">
+                <label for="insurance_coverage_update">Insurance Coverage:</label>
+                <input type="number" name="insurance_coverage_update" step="0.01">
+
+                <label for="treatment_name_update">Treatment Name:</label>
+                <input type="text" name="treatment_name_update">
+
+                <label for="treatment_cost_update">Treatment Cost:</label>
+                <input type="number" name="treatment_cost_update" step="0.01">
+
+                <label for="insurance_discount_update">Insurance Discount:</label>
+                <input type="number" name="insurance_discount_update" step="0.01">
+
+                <button type="submit">Update</button>
             </form>
-        </section>
+        </div>
 
-        <!-- Delete Medical Procedure -->
-        <section>
-            <h3>Delete Medical Procedure</h3>
-            <form action="/delete_procedure" method="POST">
-                <label for="procedure_delete">Procedure Name:</label>
-                <select id="procedure_delete" name="ProcedureName" required> <!-- Changed to ProcedureName -->
-                    <option value="">Select Procedure</option>
+        <!-- Delete Procedure Section -->
+        <div class="section">
+            <h2>Delete Procedure</h2>
+            <form action="/delete" method="POST">
+                <label for="patient_name_delete">Patient Name:</label>
+                <select name="patient_name" required>
+                    {% for patient in  patientsMed %}
+                    <option value="{{ patient[0] }}">{{ patient[1] }}</option>
+                    {% endfor %}
                 </select>
 
-                <input type="submit" value="Delete">
+                <label for="procedure_name_delete">Procedure Name:</label>
+                <select name="procedure_name_delete" required>
+                    {% for procedure in procedures %}
+                    <option value="{{ procedure[1] }}">{{ procedure[1] }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Delete</button>
             </form>
-        </section>
+        </div>
     </div>
 </body>
 </html>
