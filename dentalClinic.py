@@ -1,6 +1,9 @@
+
 from flask import Flask, render_template, url_for
 import pymysql
 from datetime import datetime
+
+from doctorPy import execute_query
 
 app = Flask(__name__)
 
@@ -75,16 +78,23 @@ def dashboard():
 
     # Pass the doctor shifts and total hours to the template
     return render_template('dashboard.html', doctor_shifts=doctor_shifts)
-
+@app.route('/invoice')
+def income_report():
+    query = """
+        SELECT p.PatientID, CONCAT(p.FirstName, ' ', p.LastName) AS PatientName,
+               i.TotalAmount, i.TotalPaid, (i.TotalAmount - i.TotalPaid) AS Balance
+        FROM Patient p
+        JOIN Invoice i ON p.PatientID = i.PatientID
+    """
+    income_data = execute_query(query, fetch=True)
+    return render_template('invoice.html', income_data=income_data)
+@app.route('/add_appointment')
+def add_appointment():
+    return render_template('add_appointment.html')
 # Route for adding patient
 @app.route('/add_patient')
 def add_patient():
     return render_template('add_patient.html')
-@app.route('/add_appointment')
-def add_appointment():
-    return render_template('add_appointment.html')
-
-
 
 # Route for adding doctor
 @app.route('/add_doctor')
@@ -95,6 +105,12 @@ def add_doctor():
 @app.route('/myClinic')
 def myClinic():
     return render_template('myClinic.html')
+@app.route('/add_invoice')
+def add_invoice():
+    return render_template('add_invoice.html')
+@app.route('/invoice')
+def invoice():
+    return render_template('invoice.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

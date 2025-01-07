@@ -302,7 +302,7 @@
   <div class="menu">
     <a href="{{url_for('dashboard')}}">Dashboard</a>
     <a href="{{url_for('myClinic')}}" >My Clinic</a>
-    <a href="#" >Data Security</a>
+    <a href="{{url_for('invoice')}}" >Price List</a>
     <a href="#" >Blogs</a>
     <a href="#" >Contact</a>
     <a href="#" >FAQs</a>
@@ -395,9 +395,18 @@
     </div>
     {% endfor %}
   </div>
+  
 </div>
 
-
+<!-- invoice Section -->
+<div class="section">
+  <div class="section-header">
+    <h3>Invoice</h3>
+    <a class="add-icon" href="{{ url_for('add_invoice') }}">
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+    </a>
+    </span>
+  </div>
 
 <script>
 

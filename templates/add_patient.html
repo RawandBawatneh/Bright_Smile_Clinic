@@ -103,40 +103,42 @@
 
         <section>
             <h3>Insert Patient</h3>
-            <form action="/insert_patient" method="POST">
+            <form action="{{ url_for('add_patient') }}" method="POST">
                 <label for="firstname">First Name:</label>
-                <input type="text" id="firstname" name="firstname" required>
+                <input type="text" id="firstname" name="FirstName" required>
 
                 <label for="lastname">Last Name:</label>
-                <input type="text" id="lastname" name="lastname" required>
+                <input type="text" id="lastname" name="LastName" required>
 
                 <label for="dob">Date of Birth:</label>
-                <input type="date" id="dob" name="dob" required>
+                <input type="date" id="dob" name="DateOfBirth" required>
 
                 <label for="balance">Balance:</label>
-                <input type="number" id="balance" name="balance" required>
+                <input type="number" id="balance" name="Balance" step="0.01" required>
 
                 <label for="phone">Phone Number:</label>
-                <input type="text" id="phone" name="phone" required>
+                <input type="text" id="phone" name="PhoneNumber" required>
 
                 <label for="emergency">Emergency Contact:</label>
-                <input type="text" id="emergency" name="emergency">
+                <input type="text" id="emergency" name="EmergencyContact">
 
                 <label for="drug_allergy">Drug Allergy:</label>
-                <input type="text" id="drug_allergy" name="drug_allergy">
+                <input type="text" id="drug_allergy" name="DrugAllergy">
 
                 <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
+                <select id="gender" name="Gender" required>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                 </select>
-
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="Address" required>
+                
                 <label for="insurance">Insurance Status:</label>
-                <input type="text" id="insurance" name="insurance">
+                <input type="text" id="insurance" name="InsuranceStatus">
 
                 <label for="medical_history">Medical History:</label>
-                <textarea id="medical_history" name="medical_history" rows="4"></textarea>
+                <textarea id="medical_history" name="MedicalHistory" rows="4"></textarea>
 
                 <input type="submit" value="Insert">
             </form>
@@ -144,9 +146,14 @@
 
         <section>
             <h3>Update Patient</h3>
-            <form action="/update_patient" method="POST">
-                <label for="patient_id">Patient ID:</label>
-                <input type="number" id="patient_id" name="patient_id" required>
+            <form action="{{ url_for('add_patient') }}" method="POST">
+                <label for="patient_id">Patient Name:</label>
+                <select name="patient_id" id="patient_id" required>
+                    <option value="" disabled selected>Select a Patient</option>
+                    {% for patient in patients %}
+                        <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+                    {% endfor %}
+                </select>
 
                 <label for="attribute">Attribute to Update:</label>
                 <select id="attribute" name="attribute" required>
@@ -171,9 +178,14 @@
 
         <section>
             <h3>Delete Patient</h3>
-            <form action="/delete_patient" method="POST">
-                <label for="delete_patient_id">Patient ID:</label>
-                <input type="number" id="delete_patient_id" name="delete_patient_id" required>
+            <form action="{{ url_for('add_patient') }}" method="POST">
+                <label for="delete_patient_id">Patient Name:</label>
+                <select name="patient_id" id="delete_patient_id" required>
+                    <option value="" disabled selected>Select a Patient</option>
+                    {% for patient in patients %}
+                        <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+                    {% endfor %}
+                </select>
 
                 <input type="submit" value="Delete">
             </form>

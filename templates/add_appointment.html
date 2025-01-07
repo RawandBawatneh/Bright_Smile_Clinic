@@ -1,166 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointment Management</title>
+    <title>Appointment Management System</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #007BFF, #8E44AD); 
+            background: linear-gradient(to right, #007BFF, #8E44AD);
+            color: white;
         }
 
         .header {
             background: #0073b7;
             color: white;
             text-align: left;
-            padding: 30px 50px;
+            padding: 20px;
             font-size: 2.5em;
             font-weight: bold;
-            font-style: oblique;
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .header img {
-            width: 80px;
-            margin-right: 20px;
-            border-radius: 50%;
-            display: inline-block;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .container {
             width: 80%;
             margin: 30px auto;
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #0073b7;
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        section {
-            margin: 20px 0;
+            color: #333;
             padding: 20px;
-            background-color: #f0faff;
-            border: 1px solid #0073b7;
             border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
         }
 
         form {
-            margin: 10px 0;
+            margin-top: 20px;
         }
 
         label {
             display: block;
             margin: 10px 0 5px;
             font-weight: bold;
-            color: #333;
         }
 
-        input[type="text"], input[type="time"], input[type="date"], input[type="number"], select, textarea {
-            width: 100%;
-            padding: 12px;
+        input[type="text"],
+        input[type="number"],
+        input[type="time"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 97%;
+            padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
+            border-radius: 5px;
+            font-size: 16px;
         }
 
-        input[type="submit"] {
-            background: linear-gradient(to right, #007BFF, #8E44AD); 
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(to right, #007BFF, #8E44AD);
             color: white;
-            padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 1.1em;
+            transition: background 0.3s;
         }
 
-        input[type="submit"]:hover {
-            background-color: #005a93;
+        button:hover {
+            background: #005a93;
+        }
+
+        .select-style {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .section h3 {
+            margin-top: 20px;
         }
     </style>
+
 </head>
+
 <body>
     <div class="header">
-        <img src="https://i.pinimg.com/736x/93/67/66/93676657facf845a38f6550c47dcccc4.jpg" alt="Logo">
-        Bright Smile Dental Clinic - Appointment Management
+        Bright Smile clinic - Management System
     </div>
 
     <div class="container">
-        <h2>Appointment Management</h2>
+        <!-- Appointment Management Section -->
+        <div id="appointment-section" class="section active">
+            <h2>Manage Appointments</h2>
 
-        <section>
-            <h3>Insert Appointment</h3>
+            <!-- Insert Appointment -->
             <form action="/insert_appointment" method="POST">
-                <label for="patient_id">Patient ID:</label>
-                <input type="number" id="patient_id" name="patient_id" required>
+                <h3>Insert Appointment</h3>
 
-                <label for="doctor_id">Doctor ID:</label>
-                <input type="number" id="doctor_id" name="doctor_id" required>
-
-                <label for="appointment_date">Appointment Date:</label>
-                <input type="date" id="appointment_date" name="appointment_date" required>
-
-                <label for="appointment_time">Appointment Time:</label>
-                <input type="time" id="appointment_time" name="appointment_time" required>
-
-                <label for="status">Status:</label>
-                <select id="status" name="status" required>
-                    <option value="Pending">Pending</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Cancelled">Cancelled</option>
+                <!-- Select Patient Name -->
+                <label for="patient_name">Patient Name:</label>
+                <select name="patient_id" id="patient_id" required>
+                    <option value="" disabled selected>Select a Patient</option>
+                    {% for patient in patients %}
+                        <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+                    {% endfor %}
                 </select>
 
-                <label for="notes">Notes:</label>
-                <textarea id="notes" name="notes" rows="3"></textarea>
+                <!-- Select Doctor Name -->
+                <label for="doctor-name">Doctor Name:</label>
+                <select name="doctor_id" id="doctor_id" required>
+                    <option value="" disabled selected>Select Doctor</option>
+                    {% for doctor in doctors %}
+                        <option value="{{ doctor.DoctorID }}">{{ doctor.Name }}</option>
+                    {% endfor %}
+                </select>
+                
 
-                <input type="submit" value="Insert">
+                <!-- Appointment Date -->
+                <label for="appointment-date">Appointment Date:</label>
+                <input type="date" id="appointment-date" name="appointment_date" required>
+
+                <!-- Appointment Time -->
+                <label for="appointment-time">Appointment Time:</label>
+                <input type="time" id="appointment-time" name="appointment_time" required>
+
+                <!-- Notes -->
+                <label for="notes">Notes (Optional):</label>
+                <textarea id="notes" name="notes" rows="6" placeholder="Optional"></textarea>
+                <br><br>
+                <button type="submit">Insert Appointment</button>
             </form>
-        </section>
 
-        <section>
-            <h3>Update Appointment</h3>
-            <form action="/update_appointment" method="POST">
-                <label for="appointment_id">Appointment ID:</label>
-                <input type="number" id="appointment_id" name="appointment_id" required>
+            <!-- Update Appointment -->
+  <!-- Update Appointment -->
+<form id="updateForm" action="/update_appointment" method="POST">
+    <h3>Update Appointment</h3>
 
-                <label for="attribute">Attribute to Update:</label>
-                <select id="attribute" name="attribute" required>
-                    <option value="PatientID">Patient ID</option>
-                    <option value="DoctorID">Doctor ID</option>
-                    <option value="AppointmentDate">Appointment Date</option>
-                    <option value="AppointmentTime">Appointment Time</option>
-                    <option value="Status">Status</option>
-                    <option value="Notes">Notes</option>
+    <!-- Patient Name Selection -->
+    <label for="patient_id">Patient Name:</label>
+    <select name="patient_id" id="patient_id" required>
+        <option value="" disabled selected>Select a Patient</option>
+        {% for patient in patients %}
+            <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- Doctor Selection -->
+    <label for="doctor_id">Select Doctor:</label>
+    <select name="doctor_id" id="doctor_id" required>
+        <option value="" disabled selected>Select Doctor</option>
+        {% for doctor in doctors %}
+            <option value="{{ doctor.DoctorID }}">{{ doctor.Name }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- Appointment Date (Optional) -->
+    <label for="appointment_date">Appointment Date (Optional):</label>
+    <input type="date" id="appointment_date" name="appointment_date" class="select-style" placeholder="Optional"/>
+
+    <!-- Appointment Time (Optional) -->
+    <label for="appointment_time">Appointment Time (Optional):</label>
+    <input type="time" id="appointment_time" name="appointment_time" class="select-style" placeholder="Optional"/>
+
+<!-- Status (Optional) -->
+<label for="status">Status (Optional):</label>
+<select id="status" name="status" class="select-style">
+    <option value="" disabled selected>Select Status (Optional)</option>
+    <option value="Pending">Pending</option>
+    <option value="Confirmed">Confirmed</option>
+    <option value="Completed">Completed</option>
+    <option value="Cancelled">Cancelled</option>
+    <option value="Rescheduled">Rescheduled</option>
+    <option value="No-Show">No-Show</option>
+    <option value="In Progress">In Progress</option>
+    <option value="Follow-Up">Follow-Up</option>
+    <option value="Awaiting Payment">Awaiting Payment</option>
+    <option value="Paid">Paid</option>
+    <option value="Expired">Expired</option>
+    <option value="Failed">Failed</option>
+    <option value="Under Review">Under Review</option>
+</select>
+
+    <!-- Notes (Optional) -->
+    <label for="notes">Notes (Optional):</label>
+    <textarea id="notes" name="notes" rows="6" placeholder="Optional"></textarea>
+
+    <br><br>
+    <button type="submit">Update Appointment</button>
+</form>
+
+
+            <!-- Delete Appointment -->
+            <form id="deleteForm" action="/delete_appointment" method="POST">
+                <h3>Delete Appointment</h3>
+
+                <!-- Select Patient Name -->
+                <label for="patient_id_delete">Patient Name:</label>
+                <select name="patient_id" id="patient_id" required>
+                    <option value="" disabled selected>Select a Patient</option>
+                    {% for patient in patients %}
+                        <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+                    {% endfor %}
                 </select>
 
-                <label for="new_value">New Value:</label>
-                <input type="text" id="new_value" name="new_value" required>
-
-                <input type="submit" value="Update">
+                <!-- Select Appointment Date -->
+                <label for="delete-appointment-date">Select Appointment Date:</label>
+                <input type="date" id="delete-appointment-date" name="appointment_date" required>
+                <button type="submit">Delete Appointment</button>
             </form>
-        </section>
 
-        <section>
-            <h3>Delete Appointment</h3>
-            <form action="/delete_appointment" method="POST">
-                <label for="delete_appointment_id">Appointment ID:</label>
-                <input type="number" id="delete_appointment_id" name="delete_appointment_id" required>
-
-                <input type="submit" value="Delete">
-            </form>
-        </section>
+        </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Fetch doctor names on page load
+        $(document).ready(function () {
+            $.get('/fetch_doctor_names', function (data) {
+                if (data) {
+                    data.forEach(doctor => {
+                        $('#doctor-name').append(`<option value="${doctor.DoctorID}">${doctor.Name}</option>`);
+                        $('#doctor_id').append(`<option value="${doctor.DoctorID}">${doctor.Name}</option>`);
+                    });
+                } else {
+                    alert('Failed to load doctor names.');
+                }
+            }).fail(function () {
+                alert('Error connecting to the server.');
+            });
+        });
+        // Fetch patient names on page load
+$(document).ready(function () {
+    $.get('/fetch_patient_names', function (data) {
+        if (data) {
+            data.forEach(patient => {
+                $('#patient_name').append(`<option value="${patient.PatientID}">${patient.FirstName} ${patient.LastName}</option>`);
+            });
+        } else {
+            alert('Failed to load patient names.');
+        }
+    }).fail(function () {
+        alert('Error connecting to the server.');
+    });
+});
+
+    </script>
 </body>
+
 </html>

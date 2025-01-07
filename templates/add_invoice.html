@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Management</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #007BFF, #8E44AD);
+        }
+
+        .header {
+            background: #0073b7;
+            color: white;
+            text-align: left;
+            padding: 30px 50px;
+            font-size: 2.5em;
+            font-weight: bold;
+            font-style: oblique;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header img {
+            width: 80px;
+            margin-right: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0073b7;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f0faff;
+            border: 1px solid #0073b7;
+            border-radius: 15px;
+        }
+
+        form {
+            margin: 10px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"], input[type="decimal"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"], button {
+            background: linear-gradient(to right, #007BFF, #8E44AD);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
+        }
+
+        input[type="submit"]:hover, button:hover {
+            background-color: #005a93;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://i.pinimg.com/736x/93/67/66/93676657facf845a38f6550c47dcccc4.jpg" alt="Logo">
+        Bright Smile Hospital - Invoice Management
+    </div>
+
+    <div class="container">
+        <h2>Manage Invoices</h2>
+
+        <!-- Display message if any -->
+        {% if message %}
+            <div class="{{ message_type }}-message">{{ message }}</div>
+        {% endif %}
+
+        <!-- Insert Invoice -->
+        <h3>Insert Invoice</h3>
+        <form action="/insert_invoice" method="POST">
+            <label for="patient_name">Patient Name:</label>
+            <select name="patient_name" id="patient_name" required>
+                <option value="" disabled selected>Select a Patient</option>
+                {% for patient in patients %}
+                    <option value="{{ patient.FirstName }} {{ patient.LastName }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="total_amount">Total Amount:</label>
+            <input type="number" id="total_amount" name="total_amount" step="0.01" required>
+
+            <label for="total_paid">Total Paid:</label>
+            <input type="number" id="total_paid" name="total_paid" step="0.01" required>
+
+            <label for="discount_applied">Discount Applied (optional):</label>
+            <input type="number" id="discount_applied" name="discount_applied" step="0.01">
+
+            <label for="payment_method">Payment Method:</label>
+            <select id="payment_method" name="payment_method" required>
+                <option value="" disabled selected>Select Payment Method</option>
+                <option value="Cash">Cash</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="Online Payment">Online Payment</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Insurance">Insurance</option>
+            </select>
+
+            <button type="submit">Insert</button>
+        </form>
+
+        <!-- Update Invoice -->
+        <h3>Update Invoice</h3>
+        <form action="/update_invoice" method="POST">
+            <label for="patient_id">Patient Name:</label>
+            <select name="patient_id" id="patient_id" required>
+                <option value="" disabled selected>Select a Patient</option>
+                {% for patient in patients %}
+                    <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="attribute">Attribute:</label>
+            <select id="attribute" name="attribute" required>
+                <option value="TotalPaid">Total Paid</option>
+                <option value="PaymentMethod">Payment Method</option>
+            </select>
+
+            <label for="new_value">New Value:</label>
+            <input type="text" id="new_value" name="new_value" required>
+
+            <button type="submit">Update</button>
+        </form>
+
+        <!-- Delete Invoice -->
+        <h3>Delete Invoice</h3>
+        <form action="/delete_invoice" method="POST">
+            <label for="patient_id_delete">Patient Name:</label>
+            <select name="patient_id" id="patient_id_delete" required>
+                <option value="" disabled selected>Select a Patient</option>
+                {% for patient in patients %}
+                    <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+</body>
+</html>
