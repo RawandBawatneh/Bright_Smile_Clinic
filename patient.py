@@ -16,103 +16,101 @@ def connect_db():
 
 @app.route('/add_patient', methods=['GET', 'POST'])
 def add_patient():
-    connection = connect_db()
-    cursor = connection.cursor(pymysql.cursors.DictCursor)
-    
     if request.method == 'POST':
+        # Fetch form data
         first_name = request.form['FirstName']
         last_name = request.form['LastName']
         date_of_birth = request.form['DateOfBirth']
-        balance = request.form['Balance']
         phone_number = request.form['PhoneNumber']
         emergency_contact = request.form['EmergencyContact']
         drug_allergy = request.form['DrugAllergy']
+        infectious_diseases = request.form['InfectiousDiseases']
         gender = request.form['Gender']
         insurance_status = request.form['InsuranceStatus']
+        constant_status = request.form['ConstantStatus']
+        referral_status = request.form['ReferralStatus']
         medical_history = request.form['MedicalHistory']
-        address = request.form['Address']  # New field for address
         
-        # Insert the new patient into the database
-        cursor.execute('''INSERT INTO Patient (FirstName, LastName, DateOfBirth, Balance, PhoneNumber, 
-                        EmergencyContact, DrugAllergy, Gender, InsuranceStatus, MedicalHistory)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
-                        (first_name, last_name, date_of_birth, balance, phone_number, emergency_contact, 
-                         drug_allergy, gender, insurance_status, medical_history))
-        connection.commit()
-        
-        # Fetch the newly inserted PatientID (this assumes PatientID is auto-incremented)
-        patient_id = cursor.lastrowid
-        
-        # Insert the patient's address into the PatientAddress table
-        cursor.execute('''INSERT INTO PatientAddress (PatientID, Address) VALUES (%s, %s)''', 
-                        (patient_id, address))
-        connection.commit()
-        
-        # Redirect to the same page after insertion
+        # Set default balance to 0.0
+        balance = 0.0
+
+        try:
+            connection = connect_db()
+            cursor = connection.cursor()
+
+            # Prepare the insert query
+            query = """
+                INSERT INTO Patient (FirstName, LastName, DateOfBirth, Balance, PhoneNumber, EmergencyContact, 
+                                     DrugAllergy, InfectiousDiseases, Gender, InsuranceStatus, ConstantStatus, 
+                                     ReferralStatus, MedicalHistory)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            data = (first_name, last_name, date_of_birth, balance, phone_number, emergency_contact, 
+                    drug_allergy, infectious_diseases, gender, insurance_status, constant_status, 
+                    referral_status, medical_history)
+            
+            # Execute the query
+            cursor.execute(query, data)
+            connection.commit()
+
+            print("Patient inserted successfully!")
+
+        except Exception as e:
+            print(f"Error inserting patient: {e}")
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
         return redirect(url_for('add_patient'))
-    
-    # Fetch patients for update and delete forms
-    cursor.execute("SELECT * FROM Patient")
-    patients = cursor.fetchall()
 
-    # Close connection
-    cursor.close()
-    connection.close()
-
-    return render_template('add_patient.html', patients=patients)
-
-
+    return render_template('add_patient.html')
 @app.route('/update_patient', methods=['POST'])
 def update_patient():
     patient_id = request.form['patient_id']
     attribute = request.form['attribute']
     new_value = request.form['new_value']
 
-    # Connect to the database
-    connection = connect_db()
-    cursor = connection.cursor()
+    try:
+        connection = connect_db()
+        cursor = connection.cursor()
 
-    # Update the patient attribute
-    update_query = f"UPDATE Patient SET {attribute} = %s WHERE PatientID = %s"
-    cursor.execute(update_query, (new_value, patient_id))
-    connection.commit()
-
-    # Update address if the attribute to update is 'Address'
-    if attribute == 'Address':
-        cursor.execute("UPDATE PatientAddress SET Address = %s WHERE PatientID = %s", 
-                       (new_value, patient_id))
+        query = f"UPDATE Patient SET {attribute} = %s WHERE PatientID = %s"
+        cursor.execute(query, (new_value, patient_id))
         connection.commit()
+        print("Patient updated successfully!")
+    except Exception as e:
+        print(f"Error updating patient: {e}")
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
-    # Close connection
-    cursor.close()
-    connection.close()
-
-    # Redirect back to the page after update
-    return redirect(url_for('add_patient'))
-
+    return redirect(url_for('manage_patients'))
 
 @app.route('/delete_patient', methods=['POST'])
 def delete_patient():
     patient_id = request.form['patient_id']
 
-    # Connect to the database
-    connection = connect_db()
-    cursor = connection.cursor()
+    try:
+        connection = connect_db()
+        cursor = connection.cursor()
 
-    # Delete the patient's address first to avoid foreign key issues
-    cursor.execute("DELETE FROM PatientAddress WHERE PatientID = %s", (patient_id,))
-    connection.commit()
+        query = "DELETE FROM Patient WHERE PatientID = %s"
+        cursor.execute(query, (patient_id,))
+        connection.commit()
+        print("Patient deleted successfully!")
+    except Exception as e:
+        print(f"Error deleting patient: {e}")
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
-    # Delete the patient record
-    cursor.execute("DELETE FROM Patient WHERE PatientID = %s", (patient_id,))
-    connection.commit()
-
-    # Close connection
-    cursor.close()
-    connection.close()
-
-    # Redirect back to the page after deletion
-    return redirect(url_for('add_patient'))
+    return redirect(url_for('manage_patients'))
 
 
 if __name__ == '__main__':

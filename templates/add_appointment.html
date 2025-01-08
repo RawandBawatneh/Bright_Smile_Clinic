@@ -141,6 +141,24 @@
                 <!-- Appointment Time -->
                 <label for="appointment-time">Appointment Time:</label>
                 <input type="time" id="appointment-time" name="appointment_time" required>
+<!-- Status (Optional) -->
+<label for="status">Status (Optional):</label>
+<select id="status" name="status" class="select-style">
+    <option value="" disabled selected>Select Status (Optional)</option>
+    <option value="Pending">Pending</option>
+    <option value="Confirmed">Confirmed</option>
+    <option value="Completed">Completed</option>
+    <option value="Cancelled">Cancelled</option>
+    <option value="Rescheduled">Rescheduled</option>
+    <option value="No-Show">No-Show</option>
+    <option value="In Progress">In Progress</option>
+    <option value="Follow-Up">Follow-Up</option>
+    <option value="Awaiting Payment">Awaiting Payment</option>
+    <option value="Paid">Paid</option>
+    <option value="Expired">Expired</option>
+    <option value="Failed">Failed</option>
+    <option value="Under Review">Under Review</option>
+</select>
 
                 <!-- Notes -->
                 <label for="notes">Notes (Optional):</label>
@@ -207,25 +225,35 @@
     <button type="submit">Update Appointment</button>
 </form>
 
+<form id="deleteForm" action="/delete_appointment" method="POST">
+    <h3>Delete Appointment</h3>
 
-            <!-- Delete Appointment -->
-            <form id="deleteForm" action="/delete_appointment" method="POST">
-                <h3>Delete Appointment</h3>
+     <!-- Select Patient Name -->
+     <label for="patientname">Patient Name:</label>
+     <select name="patientname" id="patientname" required>
+         <option value="" disabled selected>Select a Patient</option>
+         {% for patient in patients %}
+             <option value="{{ patient.FirstName }} {{ patient.LastName }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+         {% endfor %}
+     </select>
+ 
+ 
 
-                <!-- Select Patient Name -->
-                <label for="patient_id_delete">Patient Name:</label>
-                <select name="patient_id" id="patient_id" required>
-                    <option value="" disabled selected>Select a Patient</option>
-                    {% for patient in patients %}
-                        <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
-                    {% endfor %}
-                </select>
+    <!-- Select Doctor Name -->
+    <label for="doctor_name">Select Doctor:</label>
+    <select name="doctor_name" id="doctor_name" required>
+        <option value="" disabled selected>Select Doctor</option>
+        {% for doctor in doctors %}
+            <option value="{{ doctor.Name }}">{{ doctor.Name }}</option>
+        {% endfor %}
+    </select>
 
-                <!-- Select Appointment Date -->
-                <label for="delete-appointment-date">Select Appointment Date:</label>
-                <input type="date" id="delete-appointment-date" name="appointment_date" required>
-                <button type="submit">Delete Appointment</button>
-            </form>
+    <!-- Select Appointment Date -->
+    <label for="appointment_date">Select Appointment Date:</label>
+    <input type="date" id="appointment_date" name="appointment_date" required>
+
+    <button type="submit">Delete Appointment</button>
+</form>
 
         </div>
     </div>

@@ -140,7 +140,7 @@
             <label for="total_paid">Total Paid:</label>
             <input type="number" id="total_paid" name="total_paid" step="0.01" required>
 
-            <label for="discount_applied">Discount Applied (optional):</label>
+            <label for="discount_applied">Discount Applied :</label>
             <input type="number" id="discount_applied" name="discount_applied" step="0.01">
 
             <label for="payment_method">Payment Method:</label>
@@ -157,29 +157,49 @@
             <button type="submit">Insert</button>
         </form>
 
-        <!-- Update Invoice -->
-        <h3>Update Invoice</h3>
-        <form action="/update_invoice" method="POST">
-            <label for="patient_id">Patient Name:</label>
-            <select name="patient_id" id="patient_id" required>
-                <option value="" disabled selected>Select a Patient</option>
-                {% for patient in patients %}
-                    <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
-                {% endfor %}
-            </select>
 
-            <label for="attribute">Attribute:</label>
-            <select id="attribute" name="attribute" required>
-                <option value="TotalPaid">Total Paid</option>
-                <option value="PaymentMethod">Payment Method</option>
-            </select>
 
-            <label for="new_value">New Value:</label>
-            <input type="text" id="new_value" name="new_value" required>
+                <form action="/update_invoice" method="POST">
+                    <h3>Update Invoice</h3>
+                
+                    <!-- Select Patient Name -->
+                    <label for="patient_name">Patient Name:</label>
+                    <select id="patient_name" name="patient_name" required>
+                        <option value="" disabled selected>Select a Patient</option>
+                        {% for patient in patients %}
+                            <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
+                        {% endfor %}
+                    </select>
+                
+                    <!-- Total Amount (Optional) -->
+                    <label for="total_amount" class="optional">Total Amount (Optional):</label>
+                    <input type="number" id="total_amount" name="total_amount" step="0.01" placeholder="Optional">
+                
+                    <!-- Total Paid (Optional) -->
+                    <label for="total_paid" class="optional">Total Paid (Optional):</label>
+                    <input type="number" id="total_paid" name="total_paid" step="0.01" placeholder="Optional">
+                
+                    <!-- Discount Applied (Optional) -->
+                    <label for="discount_applied" class="optional">Discount Applied (Optional):</label>
+                    <input type="number" id="discount_applied" name="discount_applied" step="0.01" placeholder="Optional">
+                
+                    <!-- Payment Method (Optional) -->
+                    <label for="payment_method">Payment Method (Optional):</label>
+                    <select id="payment_method" name="payment_method" placeholder="Optional">
+                        <option value="" disabled selected>Select Payment Method</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Debit Card">Debit Card</option>
+                        <option value="Online Payment">Online Payment</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Insurance">Insurance</option>
+                    </select>
+                
 
-            <button type="submit">Update</button>
-        </form>
-
+                
+                <button type="submit">Update Invoice</button>
+            </form>
+            
         <!-- Delete Invoice -->
         <h3>Delete Invoice</h3>
         <form action="/delete_invoice" method="POST">
@@ -190,9 +210,10 @@
                     <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
                 {% endfor %}
             </select>
-
+        
             <button type="submit">Delete</button>
         </form>
+        
     </div>
 </body>
 </html>

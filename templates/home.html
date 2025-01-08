@@ -1,0 +1,275 @@
+<!DOCTYPE html>    
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bright Smile Dental Clinic</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Raleway', Arial, sans-serif;
+      background: linear-gradient(to right, #007BFF, #8E44AD); /* الأزرق والبنفسجي */
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(to right, #007BFF, #8E44AD); /* الأزرق والبنفسجي */
+      padding: 10px 20px;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+    }
+
+    .navbar .logo span {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .navbar .menu {
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar .menu a {
+      text-decoration: none;
+      color: white;
+      font-size: 1em;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .navbar .menu a:hover::after,
+    .navbar .menu a.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 100%;
+      height: 2px;
+      background: white;
+    }
+
+    .hero-section {
+      position: relative;
+      height: 60vh;
+      background: url('https://static.vecteezy.com/system/resources/previews/006/412/029/non_2x/dental-clinic-room-interior-free-vector.jpg') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1;
+    }
+
+    .hero-section h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 3em;
+      font-weight: bold;
+      color: #fff;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      animation: slideIn 2s ease-out forwards, moveText 3s 2s forwards;
+      transform: translateY(-100%);
+      z-index: 2;
+    }
+
+    .hero-section h1 span {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.5em;
+      margin-top: 10px;
+      animation: fadeIn 2s 1.5s ease-in-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes slideIn {
+      from { 
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes moveText {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(50px);
+      }
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2em;
+      color: #4a4a4a;
+    }
+
+    .section-header h3 {
+      margin: 0;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .section-content {
+      margin-top: 15px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .item span {
+      color: #4a4a4a;
+      font-weight: bold;
+    }
+
+    .item span:first-child {
+      font-size: 1em;
+      color: #6c63ff;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <div class="logo">
+    <span>Bright Smile Dental Clinic</span>
+  </div>
+  
+
+</div>
+
+<!-- Home Section -->
+<div class="container" id="home">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <h1>Welcome to <span>Bright Smile Dental Clinic</span></h1>
+  </div>
+
+
+  <section id="reviews" style="background-color: linear-gradient(to right, #007BFF, #8E44AD); color: white; padding: 50px 0; text-align: center;">
+    <h2 style="font-size: 2.5em; margin-bottom: 20px;">Our Team</h2>
+    <div style="position: relative; overflow: hidden; max-width: 90%; margin: auto;">
+      <div id="carousel" style="display: flex; justify-content: center; transition: transform 0.5s ease-in-out; gap: 15px;">
+      
+        <!-- 1 -->
+        <div class="team-member" style="background-color: white; color: #2a2a2a; padding: 15px; border-radius: 10px; width: 280px; height: 320px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <div style="font-size: 2em; margin-bottom: 10px;">👩🏼‍💻</div>
+          <h3 style="margin: 10px 0; font-size: 1em; text-align: center; overflow: hidden; word-wrap: break-word;">Rawand Bawatneh</h3>
+          <p class="role" style="font-size: 0.8em; text-align: center;">Computer Engineering, 4th Year</p>
+        </div>
+        
+        <!-- 2 -->
+        <div class="team-member" style="background-color: white; color: #2a2a2a; padding: 15px; border-radius: 10px; width: 280px; height: 320px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <div style="font-size: 2em; margin-bottom: 10px;">👩🏼‍💻</div>
+          <h3 style="margin: 10px 0; font-size: 1em; text-align: center; overflow: hidden; word-wrap: break-word;">Aseel Dar Assi</h3>
+          <p class="role" style="font-size: 0.8em; text-align: center;">Computer Engineering, 4th Year</p>
+        </div>
+        
+        <!-- 3 -->
+        <div class="team-member" style="background-color: white; color: #2a2a2a; padding: 15px; border-radius: 10px; width: 280px; height: 320px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <div style="font-size: 2em; margin-bottom: 10px;">👩🏼‍💻</div>
+          <h3 style="margin: 10px 0; font-size: 1em; text-align: center; overflow: hidden; word-wrap: break-word;">Sadeen Ryahi</h3>
+          <p class="role" style="font-size: 0.8em; text-align: center;">Computer Engineering, 4th Year</p>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  
+
+
+
+
+<!-- Contact Us Section -->
+<section id="contact-us" style="background-color: #f9f9f9; padding: 50px 0; text-align: center;">
+  <h2 style="color: #2a2a2a; font-size: 2em; margin-bottom: 20px;">Contact Us</h2>
+  <p style="color: #555; font-size: 1.2em; margin-bottom: 40px;">
+      The way to your new smile is much easier than you might think. Get in touch with us and our friendly and caring team will gladly guide you all the way to the perfect teeth. Use any of the contact details below to get professional support.
+  </p>
+  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+      <!-- Contact Item 1 -->
+      <div style="background-color: #472291; color: white; padding: 20px; border-radius: 10px; width: 250px;">
+          <div style="font-size: 2em; margin-bottom: 10px;">📞</div>
+          <h3 style="margin: 10px 0;">Tel / Viber / WhatsApp</h3>
+          <p>+970 59 123 4567</p>
+      </div>
+      <!-- Contact Item 2 -->
+      <div style="background-color: #472291; color: white; padding: 20px; border-radius: 10px; width: 250px;">
+          <div style="font-size: 2em; margin-bottom: 10px;">📧</div>
+          <h3 style="margin: 10px 0;">Mail Us</h3>
+          <p>info@clinicname.com</p>
+      </div>
+      <!-- Contact Item 3 -->
+      <div style="background-color: #472291; color: white; padding: 20px; border-radius: 10px; width: 250px;">
+          <div style="font-size: 2em; margin-bottom: 10px;">📍</div>
+          <h3 style="margin: 10px 0;">Our Location</h3>
+          <p>Ramallah, Palestine</p>
+      </div>
+  </div>
+</section>
+
+</body>
+</html>

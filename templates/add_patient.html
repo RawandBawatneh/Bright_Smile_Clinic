@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -106,90 +106,130 @@
             <form action="{{ url_for('add_patient') }}" method="POST">
                 <label for="firstname">First Name:</label>
                 <input type="text" id="firstname" name="FirstName" required>
-
+        
                 <label for="lastname">Last Name:</label>
                 <input type="text" id="lastname" name="LastName" required>
-
+        
                 <label for="dob">Date of Birth:</label>
                 <input type="date" id="dob" name="DateOfBirth" required>
-
-                <label for="balance">Balance:</label>
-                <input type="number" id="balance" name="Balance" step="0.01" required>
-
+        
                 <label for="phone">Phone Number:</label>
                 <input type="text" id="phone" name="PhoneNumber" required>
-
+        
                 <label for="emergency">Emergency Contact:</label>
                 <input type="text" id="emergency" name="EmergencyContact">
-
+        
                 <label for="drug_allergy">Drug Allergy:</label>
                 <input type="text" id="drug_allergy" name="DrugAllergy">
-
+        
+                <label for="infectious_diseases">Infectious Diseases:</label>
+                <input type="text" id="infectious_diseases" name="InfectiousDiseases">
+        
                 <label for="gender">Gender:</label>
                 <select id="gender" name="Gender" required>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                 </select>
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="Address" required>
-                
+        
                 <label for="insurance">Insurance Status:</label>
                 <input type="text" id="insurance" name="InsuranceStatus">
-
+        
+                <label for="constant_status">Constant Status:</label>
+                <input type="text" id="constant_status" name="ConstantStatus">
+        
+                <label for="referral_status">Referral Status:</label>
+                <input type="text" id="referral_status" name="ReferralStatus">
+        
                 <label for="medical_history">Medical History:</label>
                 <textarea id="medical_history" name="MedicalHistory" rows="4"></textarea>
-
+        
                 <input type="submit" value="Insert">
             </form>
         </section>
+        
 
-        <section>
-            <h3>Update Patient</h3>
-            <form action="{{ url_for('add_patient') }}" method="POST">
-                <label for="patient_id">Patient Name:</label>
-                <select name="patient_id" id="patient_id" required>
-                    <option value="" disabled selected>Select a Patient</option>
-                    {% for patient in patients %}
-                        <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
-                    {% endfor %}
-                </select>
+<section>
+    <h3>Update Patient</h3>
+    <form action="{{ url_for('update_patient') }}" method="POST">
+        <label for="patient_id">Patient Name:</label>
+        <select name="patient_id" id="patient_id" required>
+            <option value="" disabled selected>Select a Patient</option>
+            {% for patient in patients %}
+                <option value="{{ patient[0] }}">{{ patient[1] }}</option>
+            {% endfor %}
+        </select>
+        
 
-                <label for="attribute">Attribute to Update:</label>
-                <select id="attribute" name="attribute" required>
-                    <option value="FirstName">First Name</option>
-                    <option value="LastName">Last Name</option>
-                    <option value="DateOfBirth">Date of Birth</option>
-                    <option value="Balance">Balance</option>
-                    <option value="PhoneNumber">Phone Number</option>
-                    <option value="EmergencyContact">Emergency Contact</option>
-                    <option value="DrugAllergy">Drug Allergy</option>
-                    <option value="Gender">Gender</option>
-                    <option value="InsuranceStatus">Insurance Status</option>
-                    <option value="MedicalHistory">Medical History</option>
-                </select>
+        <label for="attribute">Attribute to Update:</label>
+        <select id="attribute" name="attribute" required>
+            <option value="FirstName">First Name</option>
+            <option value="LastName">Last Name</option>
+            <option value="DateOfBirth">Date of Birth</option>
+            <option value="Balance">Balance</option>
+            <option value="PhoneNumber">Phone Number</option>
+            <option value="EmergencyContact">Emergency Contact</option>
+            <option value="DrugAllergy">Drug Allergy</option>
+            <option value="Gender">Gender</option>
+            <option value="InsuranceStatus">Insurance Status</option>
+            <option value="MedicalHistory">Medical History</option>
+        </select>
 
-                <label for="new_value">New Value:</label>
-                <input type="text" id="new_value" name="new_value" required>
+        <label for="new_value">New Value:</label>
+        <input type="text" id="new_value" name="new_value" required>
 
-                <input type="submit" value="Update">
-            </form>
-        </section>
+        <input type="submit" value="Update">
+    </form>
+</section>
 
-        <section>
-            <h3>Delete Patient</h3>
-            <form action="{{ url_for('add_patient') }}" method="POST">
-                <label for="delete_patient_id">Patient Name:</label>
-                <select name="patient_id" id="delete_patient_id" required>
-                    <option value="" disabled selected>Select a Patient</option>
-                    {% for patient in patients %}
-                        <option value="{{ patient.PatientID }}">{{ patient.FirstName }} {{ patient.LastName }}</option>
-                    {% endfor %}
-                </select>
+<section>
+    <h3>Delete Patient</h3>
+    <form action="{{ url_for('delete_patient') }}" method="POST">
+        <label for="delete_patient_id">Patient Name:</label>
+        <select name="patient_id" id="patient_id" required>
+            <option value="" disabled selected>Select a Patient</option>
+            {% for patient in patients %}
+                <option value="{{ patient[0] }}">{{ patient[1] }}</option>
+            {% endfor %}
+        </select>
+        
 
-                <input type="submit" value="Delete">
-            </form>
-        </section>
+        <input type="submit" value="Delete">
+    </form>
+</section>
+
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/fetch_patient_names')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const patientSelect = document.getElementById('patient_id');
+                    
+                    // Ensure data is in the expected format
+                    console.log('Fetched patients:', data); // Debugging: Check the data
+    
+                    data.forEach(patient => {
+                        if (patient.length >= 3) {
+                            const option = document.createElement('option');
+                            option.value = patient[0];  // PatientID
+                            option.textContent = `${patient[1]} ${patient[2]}`;  // FirstName LastName
+                            patientSelect.appendChild(option);
+                        } else {
+                            console.error('Unexpected data format:', patient);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching patients:', error);
+                });
+        });
+    </script>
+    
 </body>
 </html>

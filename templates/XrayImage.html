@@ -121,7 +121,8 @@
                     const deleteSelect = document.getElementById('patient-name-delete');
 
                     data.forEach(patient => {
-                        const option = new Option(patient.PatientName, patient.PatientID);
+                        const patientName = `${patient.FirstName} ${patient.LastName}`;
+                        const option = new Option(patientName, patient.PatientID);
                         insertSelect.add(option.cloneNode(true));
                         updateSelect.add(option.cloneNode(true));
                         deleteSelect.add(option.cloneNode(true));
