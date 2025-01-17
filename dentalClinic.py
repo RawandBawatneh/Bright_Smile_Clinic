@@ -141,7 +141,8 @@ def get_dashboard_data():
             FROM Appointment
             WHERE AppointmentDate > %s
         '''
-        cursor.execute(upcoming_query, (today_date,))
+        cursor.execute(upcoming_query,
+         (today_date,))
         upcoming_appointments = cursor.fetchall()
 
     except Exception as e:
@@ -644,56 +645,66 @@ def delete_appointment():
         print("Unexpected error:", str(e))  # Debugging
         return jsonify({"message": f"An unexpected error occurred: {str(e)}"}), 500
 ################################################### Invoice table #############################################################
-
-
 @app.route('/insert_invoice', methods=['POST'])
 def insert_invoice():
-
     data = request.form
-    full_name = data['patient_name']  # Get the full name from the form
-    
+    full_name = data.get('patient_name', '').strip()
+
+    if not full_name:
+        return render_template('add_invoice.html', message='Please provide a patient name.', message_type='error', patients=get_patient_names())
+
     # Split the full name into first and last names
     name_parts = full_name.split(' ', 1)
-    
+
     if len(name_parts) < 2:
         return render_template('add_invoice.html', message='Please provide both first and last names.', message_type='error', patients=get_patient_names())
 
-    first_name, last_name = name_parts  # Unpack the split name
+    first_name, last_name = name_parts
+    
+    # Debugging - print full name and split name parts
+    print(f"Full name: {full_name}")
+    print(f"Name parts: {name_parts}")
     
     # Get PatientID based on full name (FirstName + LastName)
     query = """
         SELECT PatientID 
         FROM Patient 
-        WHERE FirstName = %s AND LastName = %s
+        WHERE TRIM(LOWER(FirstName)) = TRIM(LOWER(%s)) 
+        AND TRIM(LOWER(LastName)) = TRIM(LOWER(%s))
     """
     params = (first_name, last_name)
     result = execute_query(query, params, fetch=True)
     
     if result:
         patient_id = result[0]['PatientID']
+        print(f"Found PatientID: {patient_id}")
     else:
+        print(f"Patient not found for {first_name} {last_name}")
         return render_template('add_invoice.html', message='Patient not found.', message_type='error', patients=get_patient_names())
-    
+
     # Get the total paid, total amount, discount applied, and payment method
     try:
-        # Trim any whitespace from the inputs and check if they're not empty
-        total_paid_str = data['total_paid'].strip() if data['total_paid'] else ''
-        total_amount_str = data['total_amount'].strip() if data['total_amount'] else ''
+        total_paid_str = data.get('total_paid', '').strip()
+        total_amount_str = data.get('total_amount', '').strip()
         
         if total_paid_str and total_amount_str:
             total_paid = float(total_paid_str)
             total_amount = float(total_amount_str)
         else:
-            raise ValueError("Invalid input: Total Amount or Total Paid is empty.")
+            raise ValueError("Total Amount or Total Paid is empty.")
         
-        discount_applied = float(data.get('discount_applied', '0.00').strip())  # Default to 0 if not provided
+        # Default discount to 0 if not provided
+        discount_applied = float(data.get('discount_applied', '0.00').strip())
         
     except ValueError as e:
         return render_template('add_invoice.html', message=f'Invalid input for Total Amount or Total Paid. Error: {str(e)}', message_type='error', patients=get_patient_names())
     
-    payment_method = data['payment_method']
-    
-    # Insert the invoice with the discount applied and total amount
+    # Get the payment method
+    payment_method = data.get('payment_method', '').strip()
+    if not payment_method:
+        return render_template('add_invoice.html', message='Please provide a payment method.', message_type='error', patients=get_patient_names())
+
+    # Insert the invoice into the database
     query = """
         INSERT INTO Invoice (PatientID, TotalAmount, TotalPaid, DiscountApplied, PaymentMethod)
         VALUES (%s, %s, %s, %s, %s)
